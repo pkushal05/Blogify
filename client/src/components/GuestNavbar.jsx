@@ -3,6 +3,8 @@ import React from "react";
 import { Search, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import blogify_logo from "../assets/blogify_logo.svg";
+import blogify_logo_white from "../assets/blogify_logo_white.svg";
+
 
 const GuestNavbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -36,7 +38,7 @@ const GuestNavbar = () => {
   }, [lastScrollY]);
   return (
     <header
-      className={`w-full h-[14vh] bg-base-300 z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
+      className={`w-full h-[14vh] bg-neutral text-neutral-content z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -45,7 +47,7 @@ const GuestNavbar = () => {
           <div className="sm:min-w-12">
             <Link to={"/"} className="cursor-default text">
               <img
-                src={blogify_logo}
+                src={blogify_logo_white}
                 className="w-full h-full"
                 alt="Blogify logo"
               />
@@ -57,9 +59,9 @@ const GuestNavbar = () => {
             {["Home", "About", "Contact"].map((item, index) => {
               return (
                 <Link
-                  to={`/${item.toLowerCase()}`}
+                  to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
                   key={index}
-                  className="text-neutral text-[2.8vh] hover:text-neutral-content"
+                  className="text-[2.8vh] hover:text-base-200"
                 >
                   {item}
                 </Link>
@@ -70,14 +72,14 @@ const GuestNavbar = () => {
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
             <Link to={"/signup"}>
-              <button className="bg-primary text-xs md:text-base  font-semibold text-primary-content px-4 py-2 rounded-lg hover:text-primary hover:bg-primary-content transition-colors ">
+              <button className="bg-primary-content text-xs md:text-base  font-semibold text-primary px-4 py-2 rounded-lg hover:text-primary-content hover:bg-primary transition-colors ">
                 Sign Up
               </button>
             </Link>
 
             {/* Mobile menu button */}
             <button
-              className="md:hidden"
+              className="lg:hidden"
               onClick={() => setIsMenuOpen(!isMenuOpen)}
             >
               {isMenuOpen ? (
@@ -91,20 +93,20 @@ const GuestNavbar = () => {
 
         {/* Mobile Menu */}
         {isMenuOpen && (
-          <div className="md:hidden relative w-full z-50">
-            <div className="flex flex-col space-y-4 absolute items-center bg-base-300 pt-4 pb-4 w-full h-auto top-1 left-0">
+          <div className="lg:hidden relative w-full z-50 ">
+            <div className="flex flex-col space-y-4 bg-neutral text-neutral-content absolute items-center pt-4 pb-4 w-full h-auto top-1 left-0">
               {["Home", "About", "Contact"].map((item, index) => {
                 return (
                   <Link
-                    to={`/${item.toLowerCase()}`}
+                    to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
                     key={index}
-                    className="text-neutral hover:text-neutral-content"
+                    className="hover:text-base-200"
                   >
                     {item}
                   </Link>
                 );
               })}
-              <p className="mt-6 text-neutral text-sm">
+              <p className="mt-6 text-neutral-content text-sm">
                 &copy; {`${new Date().getFullYear()} Blogify`}
               </p>
             </div>

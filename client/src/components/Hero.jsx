@@ -1,10 +1,16 @@
-import React from 'react'
+import React from "react";
 import { Link } from "react-router-dom";
-
+import { motion } from "framer-motion";
 
 const Hero = () => {
   return (
-    <div className="w-full min-h-[calc(100vh-14vh)] flex items-center justify-center py-8">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+      className="w-full min-h-[calc(100vh-14vh)] flex items-center justify-center py-8"
+    >
       <div className="container mx-auto px-6 mt-30 lg:px-20 flex flex-col-reverse lg:flex-row items-center">
         {/* Text Content */}
         <div className="w-full lg:w-1/2 text-center lg:text-left space-y-3">
@@ -34,8 +40,8 @@ const Hero = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
 
-export default Hero
+export default Hero;

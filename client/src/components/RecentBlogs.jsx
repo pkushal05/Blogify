@@ -1,8 +1,14 @@
-import React from 'react'
+import React from "react";
+import { motion } from "framer-motion";
 
 const RecentBlogs = () => {
   return (
-    <div>
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.6 }}
+    >
       <div className="w-[90%] min-h-auto mx-auto my-22">
         <h2 className="text-3xl md:text-5xl font-[FairPlay] text-center mb-10 text-neutral">
           Recent Blogs
@@ -36,8 +42,8 @@ const RecentBlogs = () => {
           ))}
         </div>
       </div>
-    </div>
+    </motion.div>
   );
-}
+};
 
-export default RecentBlogs
+export default RecentBlogs;

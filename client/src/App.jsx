@@ -8,10 +8,12 @@ import { isLoggedIn } from './api/userApi.js'
 import Login from './pages/Login'
 import Signup from './pages/Signup'
 import Home from './pages/Home'
+import ScrollToTop from './pages/ScrollToTop.jsx'
 
 //Component
 import Navbar from './components/Navbar'
 import GuestNavbar from './components/GuestNavbar.jsx'
+import About from './pages/About.jsx'
 
 
 const App = () => {
@@ -21,36 +23,17 @@ const App = () => {
   // Define routes where you DON'T want any navbar
   const noNavPaths = ["/login", "/signup"];
 
-  // const [loggedIn, setLoggedIn] = useState(false);
-
-  // useEffect(() => {
-  //   async function checkAuth() {
-  //     const status = await isLoggedIn();
-
-
-  //     setLoggedIn(status.isLoggedIn)
-  //   }
-
-  //   checkAuth();
-  // },[])
-
-  // if (loggedIn === null) {
-  //   // Still checking
-  //   return <div>Loading...</div>;
-  // }
   return (
     <>
-      {/* {
-        loggedIn ? <Navbar /> : <Login />
-      } */}
+      <ScrollToTop />
       {!noNavPaths.includes(pathname) && <GuestNavbar />}
 
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/login" element={<Login />} />
-
-        <Route path="*" element={<div>Page Not Found</div>} />
+        <Route path='/about' element={<About />} />
+        <Route path="*" element={<div className='mt-25 text-4xl text-neutral p-20'>Page Not Found</div>} />
       </Routes>
     </>
   );

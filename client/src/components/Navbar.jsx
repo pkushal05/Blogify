@@ -3,6 +3,8 @@ import React from "react";
 import { Search, Menu, X } from "lucide-react";
 import { Link } from "react-router-dom";
 import blogify_logo from "../assets/blogify_logo.svg";
+import blogify_logo_white from "../assets/blogify_logo_white.svg";
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -37,7 +39,7 @@ const Navbar = () => {
 
   return (
     <header
-      className={`w-full h-[14vh] bg-base-300 font-[Poppins] z-100 border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
+      className={`w-full h-[14vh] bg-neutral text-neutral-content font-[Poppins] z-100 border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -46,7 +48,7 @@ const Navbar = () => {
           <div className="sm:min-w-12">
             <Link to={"/"} className="cursor-default text">
               <img
-                src={blogify_logo}
+                src={blogify_logo_white}
                 className="w-full h-full"
                 alt="Blogify logo"
               />
@@ -58,9 +60,9 @@ const Navbar = () => {
             {["Home", "Categories", "About", "Contact"].map((item, index) => {
               return (
                 <Link
-                  to={`/${item.toLowerCase()}`}
+                  to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
                   key={index}
-                  className="text-neutral text-[2.8vh] hover:text-neutral-content"
+                  className="text-[2.8vh] hover:text-base-200"
                 >
                   {item}
                 </Link>
@@ -104,7 +106,7 @@ const Navbar = () => {
               {["Home", "Categories", "About", "Contact"].map((item, index) => {
                 return (
                   <Link
-                    to={`/${item.toLowerCase()}`}
+                    to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
                     key={index}
                     className="text-neutral hover:text-neutral-content"
                   >

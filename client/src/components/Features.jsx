@@ -1,15 +1,16 @@
 import React from "react";
-import {
-  PenTool,
-  Image,
-  MessageCircle,
-  Zap,
-  SquarePen,
-} from "lucide-react";
+import { PenTool, Image, MessageCircle, Zap, SquarePen } from "lucide-react";
+import { motion } from "framer-motion";
 
 const Features = () => {
   return (
-    <div className="w-[90%] max-w-screen-xl min-h-screen mx-auto font-[Poppins]">
+    <motion.div
+      initial={{ scale: 0.95, opacity: 0 }}
+      whileInView={{ scale: 1, opacity: 1 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.8 }}
+      className="w-[90%] max-w-screen-xl min-h-screen mx-auto font-[Poppins]"
+    >
       <div className="flex flex-col justify-center items-center">
         <div className="text-center mb-3">
           <h1 className="text-3xl md:text-5xl text-neutral font-[FairPlay]">
@@ -59,7 +60,7 @@ const Features = () => {
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 };
 
