@@ -1,12 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { useState } from "react";
-import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, House } from "lucide-react";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
-    firstName: "",
-    lastName: "",
+    username: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -25,9 +24,9 @@ const Signup = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.firstName.trim())
-      newErrors.firstName = "First name is required";
-    if (!formData.lastName.trim()) newErrors.lastName = "Last name is required";
+    if (!formData.username.trim())
+      newErrors.username = "Username is required";
+
     if (!formData.email) {
       newErrors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
@@ -58,147 +57,147 @@ const Signup = () => {
   };
 
   return (
-    <div className="min-h-screen  flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl text-white">🚀</span>
-          </div>
-          <h2 className="text-2xl font-bold text-gray-900">Create Account</h2>
-          <p className="text-gray-600 mt-2">
-            Join us and start your journey today
-          </p>
-        </div>
-
-        <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                First Name
-              </label>
-              <input
-                name="firstName"
-                type="text"
-                value={formData.firstName}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                  errors.firstName ? "border-red-300" : "border-gray-300"
-                }`}
-                placeholder="John"
-              />
-              {errors.firstName && (
-                <div className="text-red-600 text-sm mt-1">
-                  {errors.firstName}
-                </div>
-              )}
+    <div className=" relative min-h-screen flex items-center justify-center bg-base-300 p-4">
+      <Link className="absolute top-12 left-10 btn btn-ghost btn-square" to="/">
+        <House />
+      </Link>
+      <div className="card w-full max-w-md bg-base-100 shadow-xl rounded-2xl font-[Poppins]">
+        <div className="card-body">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center rounded-full bg-primary-content">
+              <span className="text-2xl text-primary">🚀</span>
             </div>
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
-                Last Name
-              </label>
-              <input
-                name="lastName"
-                type="text"
-                value={formData.lastName}
-                onChange={handleChange}
-                className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                  errors.lastName ? "border-red-300" : "border-gray-300"
-                }`}
-                placeholder="Doe"
-              />
-              {errors.lastName && (
-                <div className="text-red-600 text-sm mt-1">
-                  {errors.lastName}
-                </div>
-              )}
-            </div>
+            <h2 className="text-2xl font-bold text-neutral">Create Account</h2>
+            <p className="text-neutral-content mt-1">
+              Join us and start your journey today
+            </p>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Name Fields */}
+          {/* Username Field */}
+          <div className="form-control w-full max-w-md mx-auto">
+            <label className="label block text-sm font-medium text-neutral mb-1">
+              Username
+            </label>
+            <input
+              type="text"
+              name="username"
+              placeholder="johndoe"
+              value={formData.username}
+              onChange={handleChange}
+              className={`input w-full focus:outline-none focus:ring-2 focus:ring-neutral-content ${
+                errors.username ? "border-red-300 bg-red-50" : "border-gray-300"
+              }`}
+            />
+            {errors.username && (
+              <label className="label pt-1">
+                <span className="label-text-alt text-error">
+                  {errors.username}
+                </span>
+              </label>
+            )}
+          </div>
+
+          {/* Email Field */}
+          <div className="form-control mt-4">
+            <label className="label block text-sm font-medium text-neutral mb-1">
               Email
             </label>
             <input
-              name="email"
               type="email"
+              name="email"
+              placeholder="john@example.com"
               value={formData.email}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                errors.email ? "border-red-300" : "border-gray-300"
+              className={`input w-full focus:outline-none focus:ring-2 focus:ring-neutral-content ${
+                errors.email ? "border-red-300 bg-red-50" : "border-gray-300"
               }`}
-              placeholder="john@example.com"
             />
             {errors.email && (
-              <div className="text-red-600 text-sm mt-1">{errors.email}</div>
+              <label className="label pt-1">
+                <span className="label-text-alt text-error">
+                  {errors.email}
+                </span>
+              </label>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Password Field */}
+          <div className="form-control mt-4">
+            <label className="label block text-sm font-medium text-neutral mb-1">
               Password
             </label>
-            <div className="relative">
+            <div className="input-group relative">
               <input
-                name="password"
                 type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Create password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full px-3 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                  errors.password ? "border-red-300" : "border-gray-300"
+                className={`input w-full focus:outline-none focus:ring-2 focus:ring-neutral-content ${
+                  errors.password
+                    ? "border-red-300 bg-red-50"
+                    : "border-gray-300"
                 }`}
-                placeholder="Create password"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                className="btn btn-ghost btn-square absolute right-0"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
-                )}
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             {errors.password && (
-              <div className="text-red-600 text-sm mt-1">{errors.password}</div>
+              <label className="label pt-1">
+                <span className="label-text-alt text-error">
+                  {errors.password}
+                </span>
+              </label>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Confirm Password Field */}
+          <div className="form-control mt-4">
+            <label className="label block text-sm font-medium text-neutral mb-1">
               Confirm Password
             </label>
             <input
-              name="confirmPassword"
               type="password"
+              name="confirmPassword"
+              placeholder="Confirm password"
               value={formData.confirmPassword}
               onChange={handleChange}
-              className={`w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-emerald-500 ${
-                errors.confirmPassword ? "border-red-300" : "border-gray-300"
+              className={`input w-full focus:outline-none focus:ring-2 focus:ring-neutral-content ${
+                errors.confirmPassword ? "border-red-300 bg-red-50" : "border-gray-300"
               }`}
-              placeholder="Confirm password"
             />
             {errors.confirmPassword && (
-              <div className="text-red-600 text-sm mt-1">
-                {errors.confirmPassword}
-              </div>
+              <label className="label pt-1">
+                <span className="label-text-alt text-error">
+                  {errors.confirmPassword}
+                </span>
+              </label>
             )}
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="w-full py-2 px-4 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-medium disabled:opacity-50 transition-colors"
-          >
-            {isLoading ? "Creating account..." : "Create Account"}
-          </button>
-        </div>
+          {/* Submit Button */}
+          <div className="form-control mt-6">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="btn btn-primary btn-block"
+            >
+              {isLoading ? "Creating account..." : "Create Account"}
+            </button>
+          </div>
 
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
+          {/* Footer Link */}
+          <p className="text-center text-sm text-neutral-content mt-4">
             Already have an account?{" "}
-            <Link to={"/login"} className="text-emerald-600 font-medium">
+            <Link to="/login" className="text-primary hover:underline ml-2">
               Sign In
             </Link>
           </p>

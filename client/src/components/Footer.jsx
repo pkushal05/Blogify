@@ -22,7 +22,7 @@ const Footer = () => {
         </div>
 
         {/* Column 2: Navigation */}
-        <div>
+        <div className="text-center">
           <h3 className="font-semibold text-lg mb-2">Quick Links</h3>
           <ul className="space-y-1 text-sm">
             <li>
@@ -44,9 +44,9 @@ const Footer = () => {
         </div>
 
         {/* Column 3: Social Media */}
-        <div>
+        <div className="text-center">
           <h3 className="font-semibold text-lg mb-2">Follow Us</h3>
-          <div className="flex gap-4">
+          <div className="flex gap-4 justify-center">
             {socialIcons.map((item, index) => (
               <Link
                 to={item.link}

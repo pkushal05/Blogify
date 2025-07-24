@@ -1,7 +1,7 @@
 import React from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { Eye, EyeOff, Mail, Lock, User, AlertCircle } from "lucide-react";
+import { Eye, EyeOff, Mail, Lock, House, AlertCircle } from "lucide-react";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -49,21 +49,26 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-indigo-600 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-2xl text-white">🔐</span>
+    <div className="relative min-h-screen flex items-center justify-center p-4 bg-base-300">
+      <Link className="absolute top-12 left-10 btn btn-ghost btn-square" to="/">
+        <House />
+      </Link>
+      <div className="card w-full max-w-md bg-base-100 shadow-xl rounded-2xl font-[Poppins]">
+        <div className="card-body">
+          {/* Header */}
+          <div className="text-center mb-6">
+            <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center rounded-full bg-primary-content">
+              <span className="text-2xl text-primary">🔐</span>
+            </div>
+            <h2 className="text-2xl font-bold text-neutral">Welcome Back</h2>
+            <p className="text-neutral-content mt-1">
+              Sign in to your account to continue
+            </p>
           </div>
-          <h2 className="text-2xl font-bold text-gray-900">Welcome Back</h2>
-          <p className="text-gray-600 mt-2">
-            Sign in to your account to continue
-          </p>
-        </div>
 
-        <div className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Email Field */}
+          <div className="form-control">
+            <label className="label block text-sm font-medium text-neutral mb-1">
               Email
             </label>
             <div className="relative">
@@ -75,73 +80,75 @@ const Login = () => {
                 type="email"
                 value={formData.email}
                 onChange={handleChange}
-                className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                className={`w-full pl-10 pr-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-content ${
                   errors.email ? "border-red-300 bg-red-50" : "border-gray-300"
                 }`}
                 placeholder="Enter your email"
               />
             </div>
             {errors.email && (
-              <div className="mt-1 flex items-center text-red-600 text-sm">
-                <AlertCircle className="h-4 w-4 mr-1" />
-                {errors.email}
-              </div>
+              <label className="label pt-1">
+                <span className="label-text-alt text-error flex items-center gap-1">
+                  <AlertCircle size={16} /> {errors.email}
+                </span>
+              </label>
             )}
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          {/* Password Field */}
+          <div className="form-control mt-4">
+            <label className="block text-sm font-medium text-neutral mb-1">
               Password
             </label>
-            <div className="relative">
-              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+            <div className="input-group relative">
+              <div className="absolute top-2 left-0 pl-3 flex items-center pointer-events-none">
                 <Lock className="h-5 w-5 text-gray-400" />
               </div>
               <input
-                name="password"
                 type={showPassword ? "text" : "password"}
+                name="password"
+                placeholder="Enter your password"
                 value={formData.password}
                 onChange={handleChange}
-                className={`w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 ${
+                className={`w-full pl-10 pr-10 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-neutral-content ${
                   errors.password
                     ? "border-red-300 bg-red-50"
                     : "border-gray-300"
                 }`}
-                placeholder="Enter your password"
               />
               <button
                 type="button"
-                className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                className="btn btn-ghost btn-square absolute right-0"
                 onClick={() => setShowPassword(!showPassword)}
               >
-                {showPassword ? (
-                  <EyeOff className="h-5 w-5 text-gray-400" />
-                ) : (
-                  <Eye className="h-5 w-5 text-gray-400" />
-                )}
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
               </button>
             </div>
             {errors.password && (
-              <div className="mt-1 flex items-center text-red-600 text-sm">
-                <AlertCircle className="h-4 w-4 mr-1" />
-                {errors.password}
-              </div>
+              <label className="label pt-1">
+                <span className="label-text-alt text-error flex items-center gap-1">
+                  <AlertCircle size={16} /> {errors.password}
+                </span>
+              </label>
             )}
           </div>
 
-          <button
-            onClick={handleSubmit}
-            disabled={isLoading}
-            className="w-full py-2 px-4 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-medium disabled:opacity-50 transition-colors"
-          >
-            {isLoading ? "Signing in..." : "Sign In"}
-          </button>
-        </div>
+          {/* Submit Button */}
+          <div className="form-control mt-6">
+            <button
+              type="submit"
+              onClick={handleSubmit}
+              disabled={isLoading}
+              className="btn btn-primary btn-block"
+            >
+              {isLoading ? "Signing in..." : "Sign In"}
+            </button>
+          </div>
 
-        <div className="mt-6 text-center">
-          <p className="text-gray-600">
-            Don't have an account?{" "}
-            <Link to="/signup" className="text-indigo-600 font-medium">
+          {/* Footer Link */}
+          <p className="text-center text-sm text-neutral-content mt-4">
+            Don’t have an account?
+            <Link to="/signup" className="text-primary hover:underline ml-2">
               Sign Up
             </Link>
           </p>

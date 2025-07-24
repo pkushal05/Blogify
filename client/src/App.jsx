@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate, useLocation } from 'react-router-dom'
 
 // Functions
 import { isLoggedIn } from './api/userApi.js'
@@ -15,6 +15,11 @@ import GuestNavbar from './components/GuestNavbar.jsx'
 
 
 const App = () => {
+
+  const { pathname } = useLocation();
+
+  // Define routes where you DON'T want any navbar
+  const noNavPaths = ["/login", "/signup"];
 
   // const [loggedIn, setLoggedIn] = useState(false);
 
@@ -38,10 +43,15 @@ const App = () => {
       {/* {
         loggedIn ? <Navbar /> : <Login />
       } */}
-      <Navbar />
-      <Home />
-        
+      {!noNavPaths.includes(pathname) && <GuestNavbar />}
 
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/signup" element={<Signup />} />
+        <Route path="/login" element={<Login />} />
+
+        <Route path="*" element={<div>Page Not Found</div>} />
+      </Routes>
     </>
   );
 }

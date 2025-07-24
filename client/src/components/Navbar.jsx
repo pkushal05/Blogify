@@ -44,7 +44,7 @@ const Navbar = () => {
       <div className="max-w-full">
         <div className="flex justify-between items-center h-16 sm-px-2">
           <div className="sm:min-w-12">
-            <Link to={"/home"} className="cursor-default text">
+            <Link to={"/"} className="cursor-default text">
               <img
                 src={blogify_logo}
                 className="w-full h-full"

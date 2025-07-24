@@ -14,8 +14,8 @@ const CallToAction = () => {
           fast, and easy to use!
         </p>
       </div>
-      <Link to="/register">
-        <button className="mt-4 md:mt-0 bg-primary-content text-primary px-6 py-3 rounded-lg text-lg font-semibold flex items-center gap-2 hover:bg-white hover:text-primary transition-all">
+      <Link to="/signup">
+        <button className="mt-4 md:mt-0 bg-primary-content text-primary px-6 py-3 rounded-lg text-lg font-semibold flex items-center gap-2 hover:bg-white hover:text-primary hover:scale-90 transition-all">
           Get Started <ArrowRight size={20} />
         </button>
       </Link>

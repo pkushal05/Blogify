@@ -36,14 +36,14 @@ const GuestNavbar = () => {
   }, [lastScrollY]);
   return (
     <header
-      className={`w-full h-[14vh] bg-base-300 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
+      className={`w-full h-[14vh] bg-base-300 z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
       <div className="max-w-full">
         <div className="flex justify-between items-center h-16 sm-px-2">
           <div className="sm:min-w-12">
-            <Link to={"/home"} className="cursor-default text">
+            <Link to={"/"} className="cursor-default text">
               <img
                 src={blogify_logo}
                 className="w-full h-full"
@@ -69,9 +69,11 @@ const GuestNavbar = () => {
 
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
-            <button className="bg-primary text-xs md:text-base  font-semibold text-primary-content px-4 py-2 rounded-lg hover:text-primary hover:bg-primary-content transition-colors ">
-              Sign Up
-            </button>
+            <Link to={"/signup"}>
+              <button className="bg-primary text-xs md:text-base  font-semibold text-primary-content px-4 py-2 rounded-lg hover:text-primary hover:bg-primary-content transition-colors ">
+                Sign Up
+              </button>
+            </Link>
 
             {/* Mobile menu button */}
             <button
