@@ -151,7 +151,7 @@ const deleteBlog = async (req, res) => {
 
 const getComments = async (req, res) => {
     try {
-        const blog = await Blog.findById(req.params._id).populate({
+        const blog = await Blog.findById(req.params.id).populate({
             path: 'comments',
             select: 'content author createdAt',
             populate: {

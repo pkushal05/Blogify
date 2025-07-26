@@ -24,10 +24,12 @@ connectDB();
 import authRoutes from "./routes/authRoutes.js";
 import userRoutes from "./routes/userRoutes.js";
 import blogRoutes from "./routes/blogRoutes.js";
+import commentRoutes from "./routes/commentRoutes.js";
 
 app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);
+app.use("/api/v1/comments", commentRoutes);
 
 
 app.listen(process.env.PORT, () => {

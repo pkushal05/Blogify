@@ -71,7 +71,6 @@ blogSchema.post("save", async function () {
 
 blogSchema.post("findOneAndDelete", async function (doc) {
   const User = mongoose.model("User");
-  console.log("hellllllo")
   await User.findByIdAndUpdate(
     doc.author,
     { $pull: { blogs: doc._id } },
