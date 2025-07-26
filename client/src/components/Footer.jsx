@@ -1,17 +1,22 @@
 import React from "react";
-import { Facebook, Github, Instagram } from "lucide-react";
+import { Github, Instagram, Mail } from "lucide-react";
+import { FaLinkedin } from "react-icons/fa";
 import { Link } from "react-router-dom";
 import blogify_logo_white from "../assets/blogify_logo_white.svg";
 
 const Footer = () => {
   const socialIcons = [
     { icon: <Github />, link: "https://github.com/pkushal05" },
-    { icon: <Instagram />, link: "https://instagram.com" },
-    { icon: <Facebook />, link: "https://facebook.com" },
+    { icon: <Instagram />, link: "https://www.instagram.com/_.kushal1052/" },
+    {
+      icon: <FaLinkedin className="text-2xl" />,
+      link: "https://www.linkedin.com/in/kushalpatel07/",
+    },
+    { icon: <Mail />, link: "mailto:patelkushal2363@gmail.com" },
   ];
 
   return (
-    <footer className="bg-neutral text-neutral-content py-10 px-6 mt-16">
+    <footer className="bg-primary/90 text-neutral-content py-10 px-6 mt-16">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
         {/* Column 1: Logo & Description */}
         <div>

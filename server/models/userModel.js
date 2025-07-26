@@ -28,6 +28,27 @@ const userSchema = mongoose.Schema(
       type: String,
       default: "",
     },
+    blogs: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Blog",
+        default: [],
+      },
+    ],
+    likes: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Blog",
+        default: [],
+      },
+    ],
+    comments: [
+      {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Comment",
+        default: [],
+      },
+    ],
     refreshToken: {
       type: String,
     },
@@ -76,4 +97,4 @@ userSchema.methods.generateRefreshToken = function () {
 
 const User = mongoose.model("User", userSchema);
 
-export default User ;
+export default User;

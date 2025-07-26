@@ -2,17 +2,19 @@
 import React from "react";
 import {
   Mail,
+  Instagram,
+  Linkedin,
   Github,
   Code,
   User,
   Lightbulb,
-  ExternalLink,
 } from "lucide-react";
 import { SiMongodb, SiExpress } from "react-icons/si";
-import { FaReact, FaNodeJs, FaSun } from "react-icons/fa";
+import { FaReact, FaNodeJs, FaSun, FaLinkedin } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { motion } from "framer-motion";
-import my_photo from "../assets/my_photo.jpg"
+import { Link } from "react-router-dom";
+
 
 const About = () => {
   const techUsed = [
@@ -22,6 +24,16 @@ const About = () => {
     { icon: <FaNodeJs />, title: "Node.js" },
     { icon: <RiTailwindCssFill />, title: "TailwindCSS" },
     { icon: <FaSun />, title: "DaisyUI" },
+  ];
+
+  const socialIcons = [
+    { icon: <Github />, link: "https://github.com/pkushal05" },
+    { icon: <Instagram />, link: "https://www.instagram.com/_.kushal1052/" },
+    {
+      icon: <FaLinkedin className="text-2xl" />,
+      link: "https://www.linkedin.com/in/kushalpatel07/",
+    },
+    { icon: <Mail />, link: "mailto:patelkushal2363@gmail.com" },
   ];
 
   const features = [
@@ -152,22 +164,19 @@ const About = () => {
             below!
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            <a
-              href="mailto:pkushal1052@gmail.com"
-              className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3 text-primary-content transition-all hover:bg-primary-content hover:text-primary hover:scale-105"
-            >
-              <Mail className="h-4 w-4 animate-bounce" />
-              Email Me
-            </a>
-            <a
-              href="https://github.com/pkushal05"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-full bg-neutral px-6 py-3 text-neutral-content transition-all hover:bg-neutral-content hover:text-neutral hover:scale-105"
-            >
-              <Github className="h-4 w-4 animate-bounce" />
-              GitHub
-            </a>
+            
+              {socialIcons.map((item, index) => (
+                <Link
+                  to={item.link}
+                  key={index}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-base-200"
+                >
+                  {item.icon}
+                </Link>
+              ))}
+            
           </div>
         </motion.div>
       </div>

@@ -38,7 +38,7 @@ const GuestNavbar = () => {
   }, [lastScrollY]);
   return (
     <header
-      className={`w-full h-[14vh] bg-neutral text-neutral-content z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
+      className={`w-full h-[14vh] bg-primary/90 text-neutral-content z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -72,8 +72,8 @@ const GuestNavbar = () => {
           {/* Search and Mobile Menu */}
           <div className="flex items-center space-x-4">
             <Link to={"/signup"}>
-              <button className="bg-primary-content text-xs md:text-base  font-semibold text-primary px-4 py-2 rounded-lg hover:text-primary-content hover:bg-primary transition-colors ">
-                Sign Up
+              <button className="bg-primary-content text-xs md:text-base font-semibold text-primary px-4 py-2 rounded-lg hover:text-primary-content hover:bg-primary transition-colors ">
+                Log In
               </button>
             </Link>
 

@@ -2,7 +2,6 @@ import User from "../models/userModel.js";
 import { sendResponse, sendError } from "../utils/helperFunctions.js";
 import { handlePhotoUpload, handlePhotoDelete } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
-import Cookies from "js-cookie";
 
 const generateTokens = async (userId) => {
   const user = await User.findById(userId);
@@ -228,7 +227,7 @@ const updateUser = async (req, res) => {
     if (req.file) {
       const localFilePath = req.file.path;
 
-      // Step 1: Delete the old image from Cloudinary if it exists
+      // Delete the old image from Cloudinary if it exists
       if (user.profilePic) {
         try {
           await handlePhotoDelete(user.profilePic);
@@ -237,7 +236,7 @@ const updateUser = async (req, res) => {
         }
       }
 
-      // Step 2: Upload new image
+      // Upload new image
       try {
         const cloudinaryResponse = await handlePhotoUpload(localFilePath);
         user.profilePic = cloudinaryResponse.secure_url;

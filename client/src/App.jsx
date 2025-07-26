@@ -14,6 +14,7 @@ import ScrollToTop from './pages/ScrollToTop.jsx'
 import Navbar from './components/Navbar'
 import GuestNavbar from './components/GuestNavbar.jsx'
 import About from './pages/About.jsx'
+import BlogDashboard from './pages/BlogDashboard.jsx'
 
 
 const App = () => {
