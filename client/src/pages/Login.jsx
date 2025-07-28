@@ -1,9 +1,17 @@
-import React from "react";
+import React, { use } from "react";
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
+import { useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff, Mail, Lock, House, AlertCircle } from "lucide-react";
+import { login } from "../features/thunks/userThunks.js";
+import { motion } from "framer-motion";
+import { set } from "mongoose";
 
 const Login = () => {
+  const dispatch = useDispatch();
+  const { isLoggedIn, loading, message } = useSelector((state) => state.user);
+
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -35,25 +43,43 @@ const Login = () => {
     return newErrors;
   };
 
-  const handleSubmit = async () => {
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
     const newErrors = validateForm();
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
       return;
     }
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Login successful!");
-    }, 1500);
+
+    setIsLoading(loading);
+    setErrors({});
+    dispatch(login(formData));
   };
+
+  useEffect(() => {
+    if (isLoggedIn) {
+      setIsLoading(false);
+    }
+  }, [isLoggedIn]);
+
+  useEffect(() => {
+    if (message) {
+      setErrors({ form: message });
+    }
+  }, [message]);
+
+  if (isLoggedIn) {
+    console.log(isLoggedIn)
+    return <Navigate to="/app" replace />;
+  }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 bg-base-300">
       <Link className="absolute top-12 left-10 btn btn-ghost btn-square" to="/">
         <House />
       </Link>
-      <div className="card w-full max-w-md bg-base-100 shadow-xl rounded-2xl font-[Poppins]">
+      <div className="card w-full max-w-md bg-base-100 shadow-xl rounded-2xl font-[Poppins] relative">
         <div className="card-body">
           {/* Header */}
           <div className="text-center mb-6">
@@ -153,6 +179,17 @@ const Login = () => {
             </Link>
           </p>
         </div>
+        {errors.form && (
+          <motion.div
+            animate={{ y: 0, opacity: 1 }}
+            initial={{ y: -20, opacity: 0 }}
+            transition={{ duration: 0.3 }}
+            exit={{ y: -20, opacity: 0 }}
+            className="absolute bottom-3 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-800 p-3 rounded-lg shadow-md"
+          >
+            {errors.form}
+          </motion.div>
+        )}
       </div>
     </div>
   );

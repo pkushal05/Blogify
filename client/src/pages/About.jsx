@@ -1,20 +1,12 @@
 // AboutSection.jsx
 import React from "react";
-import {
-  Mail,
-  Instagram,
-  Linkedin,
-  Github,
-  Code,
-  User,
-  Lightbulb,
-} from "lucide-react";
+import { Mail, Instagram, Github, Code, User, Lightbulb } from "lucide-react";
 import { SiMongodb, SiExpress } from "react-icons/si";
 import { FaReact, FaNodeJs, FaSun, FaLinkedin } from "react-icons/fa";
 import { RiTailwindCssFill } from "react-icons/ri";
 import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
-
+import my_photo from "../assets/my_photo.png";
 
 const About = () => {
   const techUsed = [
@@ -74,11 +66,9 @@ const About = () => {
           </div>
 
           {/* Image Column */}
-          <div className="flex justify-center md:justify-end">
-            <div className="avatar">
-              <div className="w-48 h-48 rounded-full ring ring-primary ring-offset-base-300 ring-offset-4 overflow-hidden">
-                <img src="https://placehold.co/192" alt="Kushal Patel" />
-              </div>
+          <div className="flex justify-center md:justify-end ">
+            <div className="w-72 h-94 overflow-hidden">
+              <img src={my_photo} alt="Kushal Patel" className="w-full h-full object-cover" />
             </div>
           </div>
         </motion.div>
@@ -164,19 +154,17 @@ const About = () => {
             below!
           </p>
           <div className="flex flex-wrap justify-center gap-4">
-            
-              {socialIcons.map((item, index) => (
-                <Link
-                  to={item.link}
-                  key={index}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-base-200"
-                >
-                  {item.icon}
-                </Link>
-              ))}
-            
+            {socialIcons.map((item, index) => (
+              <Link
+                to={item.link}
+                key={index}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="hover:text-base-200"
+              >
+                {item.icon}
+              </Link>
+            ))}
           </div>
         </motion.div>
       </div>

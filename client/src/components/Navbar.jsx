@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import React from "react";
-import { Search, Menu, X } from "lucide-react";
+import { Search, ChevronRight, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import blogify_logo from "../assets/blogify_logo.svg";
-import blogify_logo_white from "../assets/blogify_logo_white.svg";
-
+import { motion } from "framer-motion";
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -38,95 +37,83 @@ const Navbar = () => {
   }, [lastScrollY]);
 
   return (
-    <header
-      className={`w-full h-[14vh] bg-neutral text-neutral-content font-[Poppins] z-100 border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
+    <nav
+      className={`w-full h-[12vh] bg-base-300 text-neutral backdrop-blur-md z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
-      <div className="max-w-full">
-        <div className="flex justify-between items-center h-16 sm-px-2">
-          <div className="sm:min-w-12">
-            <Link to={"/"} className="cursor-default text">
-              <img
-                src={blogify_logo_white}
-                className="w-full h-full"
-                alt="Blogify logo"
-              />
-            </Link>
-          </div>
-
-          {/* Desktop Navigation */}
-          <nav className="hidden lg:flex space-x-8">
-            {["Home", "Categories", "About", "Contact"].map((item, index) => {
-              return (
-                <Link
-                  to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
-                  key={index}
-                  className="text-[2.8vh] hover:text-base-200"
-                >
-                  {item}
-                </Link>
-              );
-            })}
-          </nav>
-
-          {/* Search and Mobile Menu */}
-          <div className="flex items-center space-x-4">
-            <div className="relative hidden md:block">
-              <input
-                type="text"
-                placeholder="Search articles..."
-                className="w-48 pl-10 pr-4 py-2 border rounded-lg focus:ring-4 bg-neutral placeholder:text-neutral-content caret-neutral-content focus:ring-base-content"
-              />
-              <Search className="absolute left-3 top-2.5 h-5 w-5 text-neutral-content" />
-            </div>
-
-            <button className="bg-primary font-semibold text-primary-content px-4 py-2 rounded-lg hover:text-primary hover:bg-primary-content transition-colors">
-              Register
-            </button>
-
-            {/* Mobile menu button */}
-            <button
-              className="md:hidden"
-              onClick={() => setIsMenuOpen(!isMenuOpen)}
-            >
-              {isMenuOpen ? (
-                <X className="h-6 w-6" />
-              ) : (
-                <Menu className="h-6 w-6" />
-              )}
-            </button>
-          </div>
+      <div className="flex max-w-7xl mx-auto justify-between items-center h-16 px-2 sm:px-4">
+        <div className="w-36 sm:w-48 md:w-64 lg:w-72">
+          <img
+            src={blogify_logo}
+            alt="Blogify Logo"
+            className="w-full h-full bg-transparent"
+          />
         </div>
-
-        {/* Mobile Menu */}
-        {isMenuOpen && (
-          <div className="md:hidden relative w-full">
-            <div className="flex flex-col space-y-4 absolute items-center bg-base-300 pt-4 pb-4 w-full h-auto top-1 left-0">
-              {["Home", "Categories", "About", "Contact"].map((item, index) => {
-                return (
-                  <Link
-                    to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
-                    key={index}
-                    className="text-neutral hover:text-neutral-content"
-                  >
-                    {item}
-                  </Link>
-                );
-              })}
-              <div className="pt-2">
-                <input
-                  type="text"
-                  placeholder="Search articles..."
-                  className="w-full pl-10 pr-4 py-2 border border-neutral rounded-lg focus:ring-4 focus:ring-neutral-content placeholder:text-neutral-content"
-                />
-                <Search className="absolute top-49 left-20 h-5 w-5 text-neutral" />
-              </div>
-            </div>
+        <div className="flex items-center gap-3 md:gap-5">
+          <div className="relative">
+            <Search
+              size={20}
+              className="absolute left-2 top-2 z-10 pointer-events-none"
+            />
+            <input
+              type="text"
+              name="search"
+              className="border-1 rounded-lg h-9 pr-3 md:h-10 w-20 md:w-48 pl-10 focus:ring-1"
+              placeholder="Search..."
+            />
           </div>
-        )}
+          <div
+            className="relative flex items-center gap-2 group p-2 cursor-pointer rounded-lg transition-all duration-300"
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+          >
+            <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border-1 overflow-hidden hover:scale-95 transition-all duration-300">
+              <img
+                src="https://placehold.co/600x400/000000/FFF"
+                alt=""
+                className="w-full h-full object-cover"
+              />
+            </div>
+            <span className="hidden md:block text-base hover:text-base-100 hover:scale-95 transition-all duration-300">
+              John
+            </span>
+          </div>
+          <motion.div
+            animate={{ opacity: isMenuOpen ? 1 : 0, y: isMenuOpen ? 0 : -20 }}
+            transition={{ duration: 0.3, ease: "easeIn" }}
+            className={`${
+              isMenuOpen ? "block" : "hidden"
+            } absolute top-16 right-20 md:right-21 lg:right-32 lg:top-16 mt-2 bg-base-300 rounded-lg shadow-lg w-48`}
+          >
+            <div className="flex flex-col text-sm md:text-lg border-1 p-5 w-64 rounded-lg bg-base-300">
+              {[
+                { label: "Dashboard", to: "/dashboard" },
+                { label: "Profile", to: "/profile" },
+                { label: "My Blogs", to: "/my-blogs" },
+                { label: "Logout", to: "/logout" },
+              ].map((item, index) => (
+                <Link
+                  to={item.to}
+                  key={index}
+                  className={`p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between ${
+                    index < 3
+                      ? "text-primary hover:bg-base-100"
+                      : "text-red-500 hover:bg-red-100"
+                  }`}
+                >
+                  {item.label}
+                  {index < 3 ? (
+                    <ChevronRight className="inline ml-1" />
+                  ) : (
+                    <LogOut className="inline ml-1" />
+                  )}
+                </Link>
+              ))}
+            </div>
+          </motion.div>
+        </div>
       </div>
-    </header>
+    </nav>
   );
 };
 

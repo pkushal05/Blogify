@@ -1,11 +1,16 @@
 import React from "react";
-import { Link } from "react-router-dom";
-import { useState } from "react";
+import { Link, Navigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { register } from "../features/thunks/userThunks.js";
 import { Eye, EyeOff, House } from "lucide-react";
 
 const Signup = () => {
+
+  const { isLoggedIn, loading, message } = useSelector((state) => state.user);
+  const dispatch = useDispatch();
   const [formData, setFormData] = useState({
-    username: "",
+    userName: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -24,8 +29,7 @@ const Signup = () => {
 
   const validateForm = () => {
     const newErrors = {};
-    if (!formData.username.trim())
-      newErrors.username = "Username is required";
+    if (!formData.userName.trim()) newErrors.userName = "Username is required";
 
     if (!formData.email) {
       newErrors.email = "Email is required";
@@ -49,12 +53,32 @@ const Signup = () => {
       setErrors(newErrors);
       return;
     }
-    setIsLoading(true);
-    setTimeout(() => {
-      setIsLoading(false);
-      alert("Account created successfully!");
-    }, 2000);
+    setIsLoading(loading);
+    setErrors({});
+    const userData = {
+      userName: formData.userName,
+      email: formData.email,
+      password: formData.password,
+    };
+    dispatch(register(userData));
   };
+
+  useEffect(() => {
+    if (message) {
+      setIsLoading(loading);
+      setFormData({
+        userName: "",
+        email: "",
+        password: "",
+        confirmPassword: "",
+      });
+      setErrors({ form: message });
+    }
+  }, [message]);
+
+   if (isLoggedIn) {
+     return <Navigate to="/app" replace />;
+   }
 
   return (
     <div className=" relative min-h-screen flex items-center justify-center bg-base-300 p-4">
@@ -82,18 +106,18 @@ const Signup = () => {
             </label>
             <input
               type="text"
-              name="username"
+              name="userName"
               placeholder="johndoe"
-              value={formData.username}
+              value={formData.userName}
               onChange={handleChange}
               className={`input w-full focus:outline-none focus:ring-2 focus:ring-neutral-content ${
-                errors.username ? "border-red-300 bg-red-50" : "border-gray-300"
+                errors.userName ? "border-red-300 bg-red-50" : "border-gray-300"
               }`}
             />
-            {errors.username && (
+            {errors.userName && (
               <label className="label pt-1">
                 <span className="label-text-alt text-error">
-                  {errors.username}
+                  {errors.userName}
                 </span>
               </label>
             )}
@@ -170,7 +194,9 @@ const Signup = () => {
               value={formData.confirmPassword}
               onChange={handleChange}
               className={`input w-full focus:outline-none focus:ring-2 focus:ring-neutral-content ${
-                errors.confirmPassword ? "border-red-300 bg-red-50" : "border-gray-300"
+                errors.confirmPassword
+                  ? "border-red-300 bg-red-50"
+                  : "border-gray-300"
               }`}
             />
             {errors.confirmPassword && (
@@ -203,6 +229,11 @@ const Signup = () => {
           </p>
         </div>
       </div>
+      {errors.form && (
+        <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-800 p-3 rounded-lg shadow-md">
+          {errors.form}
+        </div>  
+      )}
     </div>
   );
 };
