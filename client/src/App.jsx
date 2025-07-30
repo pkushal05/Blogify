@@ -1,36 +1,46 @@
-import React, { useEffect, useState } from "react";
-import { Routes, Route, Navigate, useLocation } from "react-router-dom";
+import React, { Suspense, lazy } from "react";
+import { Routes, Route } from "react-router-dom";
 import { Provider } from "react-redux";
 import store from "./features/store/store.js";
-
-// Pages
-import Login from "./pages/Login";
-import Signup from "./pages/Signup";
-import Home from "./pages/Home";
 import ScrollToTop from "./pages/ScrollToTop.jsx";
+import { ScaleLoader } from "react-spinners";
 
-//Component
-import GuestLayout from "./pages/layouts/GuestLayout.jsx";
-import About from "./pages/About.jsx";
-import BlogDashboard from "./pages/BlogDashboard.jsx";
-import Example from "./pages/Example.jsx";
-import Layout from "./pages/layouts/Layout.jsx";
-import AuthLayout from "./pages/layouts/AuthLayout.jsx";
+// Lazy Load Pages
+const Login = lazy(() => import("./pages/Login"));
+const Signup = lazy(() => import("./pages/Signup"));
+const Home = lazy(() => import("./pages/Home"));
+const About = lazy(() => import("./pages/About.jsx"));
+const BlogDashboard = lazy(() => import("./pages/BlogDashboard.jsx"));
+const Example = lazy(() => import("./pages/Example.jsx"));
+import Loading from "./components/Loading.jsx";
+import BlogCard from "./components/BlogCard.jsx";
+
+// Lazy Load Layouts
+const GuestLayout = lazy(() => import("./pages/layouts/GuestLayout.jsx"));
+const Layout = lazy(() => import("./pages/layouts/Layout.jsx"));
+const AuthLayout = lazy(() => import("./pages/layouts/AuthLayout.jsx"));
 
 const App = () => {
   return (
-    <>
-      <Provider store={store}>
-        {/* Scroll to top on every route change */}
-        <ScrollToTop />
+    <Provider store={store}>
+      <Suspense
+        fallback={
+          <div className="w-full h-screen bg-base-300 flex items-center justify-center">
+            <ScaleLoader color="#b30808" />
+          </div>
+        }
+      >
         <Routes>
+          {/* Public Routes */}
           <Route element={<GuestLayout />}>
             <Route index element={<Home />} />
             <Route path="about" element={<About />} />
             <Route path="signup" element={<Signup />} />
             <Route path="login" element={<Login />} />
+            <Route path="loading" element={<BlogCard />} />
           </Route>
 
+          {/* Protected Routes */}
           <Route element={<AuthLayout />}>
             <Route path="app" element={<Layout />}>
               <Route index element={<BlogDashboard />} />
@@ -38,6 +48,7 @@ const App = () => {
             </Route>
           </Route>
 
+          {/* Fallback Route */}
           <Route
             path="*"
             element={
@@ -47,8 +58,8 @@ const App = () => {
             }
           />
         </Routes>
-      </Provider>
-    </>
+      </Suspense>
+    </Provider>
   );
 };
 

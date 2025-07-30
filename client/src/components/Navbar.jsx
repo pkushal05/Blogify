@@ -38,7 +38,7 @@ const Navbar = () => {
 
   return (
     <nav
-      className={`w-full h-[12vh] bg-base-300 text-neutral backdrop-blur-md z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
+      className={`w-full h-[12vh] text-neutral backdrop-blur-md z-50 font-[Poppins] border border-b-1 border-neutral fixed top-0 p-3 transition-transform duration-300 ease-linear ${
         isVisible ? "translate-y-0" : "-translate-y-full"
       }`}
     >
@@ -89,20 +89,19 @@ const Navbar = () => {
               {[
                 { label: "Dashboard", to: "/dashboard" },
                 { label: "Profile", to: "/profile" },
-                { label: "My Blogs", to: "/my-blogs" },
                 { label: "Logout", to: "/logout" },
               ].map((item, index) => (
                 <Link
                   to={item.to}
                   key={index}
                   className={`p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between ${
-                    index < 3
+                    index < 2
                       ? "text-primary hover:bg-base-100"
                       : "text-red-500 hover:bg-red-100"
                   }`}
                 >
                   {item.label}
-                  {index < 3 ? (
+                  {index < 2 ? (
                     <ChevronRight className="inline ml-1" />
                   ) : (
                     <LogOut className="inline ml-1" />
