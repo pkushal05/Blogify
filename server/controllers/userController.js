@@ -51,7 +51,7 @@ const registerUser = async (req, res) => {
     return sendError(res, 500, "Something went wrong while creating user");
   }
 
-  return sendResponse(res, 201, "User resgistered successfully!", {
+  return sendResponse(res, 201, "Registered successfully!", {
     user: createdUser,
   });
 };
@@ -96,7 +96,7 @@ const loginUser = async (req, res) => {
     .cookie("accessToken", accessToken, options)
     .cookie("refreshToken", refreshToken, options);
 
-  return sendResponse(res, 200, "User logged in successfully", {
+  return sendResponse(res, 200, "Logged in successfully", {
     user: loggedInUser,
     accessToken,
     refreshToken,
@@ -120,7 +120,7 @@ const logOutUser = async (req, res) => {
 
   res.cookie("accessToken", "", options).cookie("refreshToken", "", options);
 
-  return sendResponse(res, 200, "User logged out successfully", {});
+  return sendResponse(res, 200, "Logged out successfully", {});
 };
 
 // Refresh Access-Token
@@ -179,7 +179,7 @@ const getCurrentUser = async (req, res) => {
 const getUserById = async (req, res) => {
   const { _id } = req.params;
   if (!_id) {
-    return sendError(res, 404, "ser id not found");
+    return sendError(res, 404, "User id not found");
   }
 
   const user = await User.findById(_id).select("-password -refreshToken");
@@ -248,7 +248,7 @@ const updateUser = async (req, res) => {
 
     await user.save({ validateBeforeSave: false });
 
-    return sendResponse(res, 200, "User updated successfully", {
+    return sendResponse(res, 200, "Updated successfully", {
       user: {
         userName: user.userName,
         profilePic: user.profilePic,
@@ -284,9 +284,9 @@ const isLoggedIn = async (req, res) => {
   const token = req.cookies.accessToken;
   
   if (token) {
-    return sendResponse(res, 200, "User is logged in", { isLoggedIn: true })
+    return sendResponse(res, 200, null, { isLoggedIn: true })
   } else {
-    return sendResponse(res, 401, "User is not logged in", { isLoggedIn: false });
+    return sendResponse(res, 401, null, { isLoggedIn: false });
   }
 }
 

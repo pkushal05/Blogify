@@ -1,4 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
+import { useSelector, useDispatch } from "react-redux";
+import { clearUserMessages } from "../features/slices/userSlice.js";
+
+// Icons
 import {
   NotebookPen,
   ThumbsUp,
@@ -6,11 +12,13 @@ import {
   Filter,
   FilePlus2,
 } from "lucide-react";
-import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
+
+//Component
 import BlogCard from "../components/BlogCard.jsx";
 
 const BlogDashboard = () => {
+  const dispatch = useDispatch();
+  const { message, showSuccessMessage } = useSelector((state) => state.user);
   const [filterOpen, setFilterOpen] = useState(false);
   const blogs = [
     {
@@ -56,9 +64,23 @@ const BlogDashboard = () => {
     },
   ];
 
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timer = setTimeout(() => {
+        dispatch(clearUserMessages());
+      }, 3000)
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessMessage, dispatch])
+
   return (
     <div className="w-full min-h-screen bg-base-300 font-[Poppins] text-neutral">
-      <div className="pt-20 h-full max-w-7xl mx-auto">
+      <div className="pt-20 h-full max-w-7xl mx-auto relative">
+        {showSuccessMessage && (
+          <div className="absolute z-30 border right-5 top-30 p-5 rounded-3xl text-neutral select-none bg-neutral-content">
+            ✅ {message}
+          </div>
+        )}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -168,7 +190,7 @@ const BlogDashboard = () => {
                     category={item.category}
                     date={item.date}
                   />
-                );  
+                );
               })}
             </div>
           </div>

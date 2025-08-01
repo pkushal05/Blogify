@@ -1,11 +1,18 @@
 import { useState, useEffect } from "react";
-import React from "react";
+import { useSelector, useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { logout } from "../features/thunks/authThunks";
+import { clearMessage } from "../features/slices/authSlice.js"
 import { Search, ChevronRight, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import blogify_logo from "../assets/blogify_logo.svg";
 import { motion } from "framer-motion";
 
 const Navbar = () => {
+  const dispatch = useDispatch();
+  const { message, loading } = useSelector((state) => state.auth);
+  const navigate = useNavigate();
+
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
@@ -35,6 +42,16 @@ const Navbar = () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, [lastScrollY]);
+
+  const handleLogOut = async () => {
+    try {
+      await dispatch(logout());
+      
+      navigate("/");
+    } catch (error) {
+      console.log(message);
+    }
+  };
 
   return (
     <nav
@@ -89,25 +106,34 @@ const Navbar = () => {
               {[
                 { label: "Dashboard", to: "/dashboard" },
                 { label: "Profile", to: "/profile" },
-                { label: "Logout", to: "/logout" },
-              ].map((item, index) => (
-                <Link
-                  to={item.to}
-                  key={index}
-                  className={`p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between ${
-                    index < 2
-                      ? "text-primary hover:bg-base-100"
-                      : "text-red-500 hover:bg-red-100"
-                  }`}
-                >
-                  {item.label}
-                  {index < 2 ? (
-                    <ChevronRight className="inline ml-1" />
-                  ) : (
-                    <LogOut className="inline ml-1" />
-                  )}
-                </Link>
-              ))}
+                { label: "Logout", action: handleLogOut },
+              ].map((item, index) => {
+                if (item.action) {
+                  // For logout - use div with onClick
+                  return (
+                    <div
+                      key={index}
+                      onClick={item.action}
+                      className="p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between cursor-pointer text-red-500 hover:bg-red-100"
+                    >
+                      {item.label}
+                      <LogOut className="inline ml-1" />
+                    </div>
+                  );
+                } else {
+                  // For other items - use Link
+                  return (
+                    <Link
+                      to={item.to}
+                      key={index}
+                      className="p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between text-primary hover:bg-base-100"
+                    >
+                      {item.label}
+                      <ChevronRight className="inline ml-1" />
+                    </Link>
+                  );
+                }
+              })}
             </div>
           </motion.div>
         </div>
