@@ -1,5 +1,10 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
-import { checkLoginStatus, login, register } from "../thunks/userThunks.js";
+import {
+  checkLoginStatus,
+  login,
+  register,
+  update,
+} from "../thunks/userThunks.js";
 
 const initialState = {
   isLoggedIn: false,
@@ -60,14 +65,38 @@ const userSlice = createSlice({
       })
       .addCase(checkLoginStatus.pending, (state) => {
         state.loading = true;
+        state.user = null;
       })
       .addCase(checkLoginStatus.fulfilled, (state, action) => {
         state.loading = false;
         state.isLoggedIn = action.payload.isLoggedIn;
+        state.user = action.payload.user;
       })
       .addCase(checkLoginStatus.rejected, (state, action) => {
         state.loading = false;
         state.isLoggedIn = action.payload.isLoggedIn || false;
+        state.user = null;
+      })
+      .addCase(update.pending, (state) => {
+        state.loading = true;
+        state.message = null;
+        state.showSuccessMessage = false;
+      })
+      .addCase(update.fulfilled, (state, action) => {
+        state.loading = false;
+        state.message = action.payload.message;
+        state.user = {
+          ...state.user,
+          userName: action.payload.user.userName,
+          profilePic: action.payload.user.profilePic,
+        };
+        state.showSuccessMessage = true;
+      })
+      .addCase(update.rejected, (state, action) => {
+        state.loading = false;
+        state.message = action.error.message || "Failed to update";
+        state.user = null;
+        state.showSuccessMessage = false;
       });
   },
 });

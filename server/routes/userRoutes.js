@@ -6,6 +6,7 @@ import {
     getAllUsers,
     isLoggedIn
 } from "../controllers/userController.js"
+import { verifyJWT } from "../middlewares/authMiddleware.js"
 
 const router = Router();
 
@@ -13,6 +14,6 @@ const router = Router();
 router.post("/register", registerUser);
 router.post("/login", loginUser);
 router.get("/", getAllUsers);
-router.get("/status", isLoggedIn);
+router.get("/status", verifyJWT, isLoggedIn);
 
 export default router;

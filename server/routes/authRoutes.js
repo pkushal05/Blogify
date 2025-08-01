@@ -14,7 +14,7 @@ const router = Router();
 
 router.get("/me", verifyJWT, getCurrentUser);
 router.get("/:_id", verifyJWT, getUserById);
-router.patch("/:_id", verifyJWT, upload.single("profilePic"), updateUser);
+router.patch("/update", verifyJWT, upload.single("profilePic"), updateUser);
 router.delete("/:_id", verifyJWT, deleteUser);
 router.post("/logout", verifyJWT, logOutUser);
 router.post("/refresh-token", verifyJWT, refreshAccessToken);

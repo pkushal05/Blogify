@@ -34,7 +34,7 @@ const authSlice = createSlice({
         state.message = action.error.message || "Failed to log out user";
         state.user = null;
         state.showSuccessMessage = false;
-      });
+      })
   },
 });
 

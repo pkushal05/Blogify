@@ -15,3 +15,17 @@ export const logoutUser = async () => {
   }
   return data;
 };
+
+export const updateUser = async (formData) => {
+  const res = await fetch(`${BASE_URL}/update`, {
+    method: "PATCH",
+    credentials: "include",
+    body: formData,
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to update details");
+  }
+  return data;
+}

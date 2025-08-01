@@ -18,51 +18,16 @@ import BlogCard from "../components/BlogCard.jsx";
 
 const BlogDashboard = () => {
   const dispatch = useDispatch();
-  const { message, showSuccessMessage } = useSelector((state) => state.user);
+  const { message, showSuccessMessage, user } = useSelector((state) => state.user);
   const [filterOpen, setFilterOpen] = useState(false);
-  const blogs = [
-    {
-      thumbnail:
-        "https://thumbs.dreamstime.com/b/idyllic-summer-landscape-clear-mountain-lake-alps-45054687.jpg",
-      title: "The Rise of AI in Everyday Life",
-      content:
-        "Artificial Intelligence is no longer a concept of the future—it's embedded in how we live, shop, and communicate.",
-      authorPic: "https://randomuser.me/api/portraits/men/32.jpg",
-      authorName: "Michael Lee",
-      category: "Technology",
-      date: "July 28, 2025",
-    },
-    {
-      thumbnail: "https://picsum.photos/id/59/200/300",
-      title: "5 Morning Habits That Changed My Life",
-      content:
-        "Small consistent habits can have the biggest impact. Here's how my morning routine helped me become more productive.",
-      authorPic: "https://randomuser.me/api/portraits/women/44.jpg",
-      authorName: "Sophia Gomez",
-      category: "Lifestyle",
-      date: "July 25, 2025",
-    },
-    {
-      thumbnail: "https://picsum.photos/id/27/200/300",
-      title: "Minimal UI: The Future of Web Design?",
-      content:
-        "Less is more when it comes to design—exploring the psychology and impact of clean, focused interfaces.",
-      authorPic: "https://randomuser.me/api/portraits/men/85.jpg",
-      authorName: "Raj Patel",
-      category: "Design",
-      date: "July 20, 2025",
-    },
-    {
-      thumbnail: "https://picsum.photos/id/400/200/300",
-      title: "How Small Startups Compete with Giants",
-      content:
-        "Startups are disrupting traditional markets by focusing on agility, innovation, and deep customer empathy.",
-      authorPic: "https://randomuser.me/api/portraits/women/19.jpg",
-      authorName: "Emily Zhang",
-      category: "Business",
-      date: "July 10, 2025",
-    },
-  ];
+  const [ blogs, setBlogs ] = useState([]);
+
+  useEffect(() => {
+    if (user?.blogs) {
+      setBlogs(user.blogs);
+    }
+  }, [user]);
+
 
   useEffect(() => {
     if (showSuccessMessage) {
@@ -89,7 +54,7 @@ const BlogDashboard = () => {
           className="p-10 space-y-2 text-center lg:text-left flex flex-col"
         >
           <h2 className="text-xl md:text-2xl font-extralight">Welcome 👋</h2>
-          <h1 className="text-3xl md:text-5xl">John Doe</h1>
+          <h1 className="text-3xl md:text-5xl">{user.userName}</h1>
         </motion.div>
         <hr className="max-w-[90%] mx-auto my-5 border-t border-base-content/40" />
         <motion.div
@@ -100,9 +65,21 @@ const BlogDashboard = () => {
           className="p-5 w-full mx-auto grid grid-cols-1 lg:grid-cols-3 gap-5 select-none"
         >
           {[
-            { icon: <NotebookPen />, name: "Total Blogs", count: 0 },
-            { icon: <ThumbsUp />, name: "Total Likes", count: 0 },
-            { icon: <MessageCircle />, name: "Total Comments", count: 0 },
+            {
+              icon: <NotebookPen />,
+              name: "Total Blogs",
+              count: `${user.blogs.length}`,
+            },
+            {
+              icon: <ThumbsUp />,
+              name: "Total Likes",
+              count: `${user.likes.length}`,
+            },
+            {
+              icon: <MessageCircle />,
+              name: "Total Comments",
+              count: `${user.comments.length}`,
+            },
           ].map((item, idx) => {
             return (
               <div
@@ -176,23 +153,27 @@ const BlogDashboard = () => {
         >
           <div className="max-w-7xl mx-auto p-5">
             <h2 className="text-2xl font-medium mb-4 select-none">My Blogs</h2>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-              {blogs.map((item, idx) => {
-                return (
-                  <BlogCard
-                    key={idx}
-                    id={idx}
-                    thumbnail={item.thumbnail}
-                    title={item.title}
-                    content={item.content}
-                    authorPic={item.authorPic}
-                    authorName={item.authorName}
-                    category={item.category}
-                    date={item.date}
-                  />
-                );
-              })}
-            </div>
+            {blogs.length === 0 ? (
+              <div className="text-neutral/50 text-lg my-10 select-none ">You haven't posted yet. 🥹</div>
+            ) : (
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {blogs.map((item, idx) => {
+                  return (
+                    <BlogCard
+                      key={idx}
+                      id={item._id}
+                      thumbnail={item.thumbnail}
+                      title={item.title}
+                      content={item.content}
+                      authorPic={user.profilePic}
+                      authorName={user.userName}
+                      category={item.category}
+                      date={new Date(item.createdAt).toLocaleDateString()}
+                    />
+                  );
+                })}
+              </div>
+            )}
           </div>
         </motion.div>
       </div>

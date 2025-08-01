@@ -1,16 +1,18 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, use } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { logout } from "../features/thunks/authThunks";
-import { clearMessage } from "../features/slices/authSlice.js"
+import { motion } from "framer-motion";
+
+// Icons
 import { Search, ChevronRight, LogOut } from "lucide-react";
 import { Link } from "react-router-dom";
 import blogify_logo from "../assets/blogify_logo.svg";
-import { motion } from "framer-motion";
 
 const Navbar = () => {
   const dispatch = useDispatch();
   const { message, loading } = useSelector((state) => state.auth);
+  const { user } = useSelector((state) => state.user);  
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -86,13 +88,13 @@ const Navbar = () => {
           >
             <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border-1 overflow-hidden hover:scale-95 transition-all duration-300">
               <img
-                src="https://placehold.co/600x400/000000/FFF"
-                alt=""
+                src={user.profilePic}
+                alt="User's profile pic"
                 className="w-full h-full object-cover"
               />
             </div>
             <span className="hidden md:block text-base hover:text-base-100 hover:scale-95 transition-all duration-300">
-              John
+              {user.userName}
             </span>
           </div>
           <motion.div
@@ -104,8 +106,8 @@ const Navbar = () => {
           >
             <div className="flex flex-col text-sm md:text-lg border-1 p-5 w-64 rounded-lg bg-base-300">
               {[
-                { label: "Dashboard", to: "/dashboard" },
-                { label: "Profile", to: "/profile" },
+                { label: "Dashboard", to: "/app" },
+                { label: "Profile", to: `profile/${user._id}` },
                 { label: "Logout", action: handleLogOut },
               ].map((item, index) => {
                 if (item.action) {

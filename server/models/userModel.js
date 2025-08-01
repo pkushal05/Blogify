@@ -26,7 +26,8 @@ const userSchema = mongoose.Schema(
     },
     profilePic: {
       type: String,
-      default: "",
+      default:
+        "https://militaryhealthinstitute.org/wp-content/uploads/sites/37/2021/08/blank-profile-picture-png.png",
     },
     blogs: [
       {

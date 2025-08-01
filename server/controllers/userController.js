@@ -210,23 +210,17 @@ const getAllUsers = async (req, res) => {
 const updateUser = async (req, res) => {
   try {
     const { userName } = req.body;
-    const oldUrl = req.user
-
-    if (!userName && !oldUrl) {
+    // const oldUrl = req.user;
+    if (!userName) {
       return sendError(res, 400, "Please provide all required fields");
     }
-
     const user = await User.findById(req.user._id);
-
     if (!user) {
       return sendError(res, 404, "User not found");
     }
-
     user.userName = userName;
-
     if (req.file) {
       const localFilePath = req.file.path;
-
       // Delete the old image from Cloudinary if it exists
       if (user.profilePic) {
         try {
@@ -235,7 +229,6 @@ const updateUser = async (req, res) => {
           console.error("Failed to delete old image:", deleteError.message);
         }
       }
-
       // Upload new image
       try {
         const cloudinaryResponse = await handlePhotoUpload(localFilePath);
@@ -245,9 +238,7 @@ const updateUser = async (req, res) => {
         return sendError(res, 500, "Image upload failed");
       }
     }
-
     await user.save({ validateBeforeSave: false });
-
     return sendResponse(res, 200, "Updated successfully", {
       user: {
         userName: user.userName,
@@ -279,16 +270,32 @@ const deleteUser = async (req, res) => {
   return sendResponse(res, 200, "User deleted successfully", {});
 };
 
-// Is logged in?
+// // Is logged in?
 const isLoggedIn = async (req, res) => {
   const token = req.cookies.accessToken;
-  
-  if (token) {
-    return sendResponse(res, 200, null, { isLoggedIn: true })
-  } else {
-    return sendResponse(res, 401, null, { isLoggedIn: false });
+
+  if (!token || !req.user?._id) {
+    return sendResponse(res, 401, "Unauthorized", { isLoggedIn: false });
   }
-}
+
+  try {
+    const user = await User.findById(req.user._id)
+      .populate("blogs")
+      .select("-password -refreshToken");
+
+    if (!user) {
+      return sendResponse(res, 404, "User not found", { isLoggedIn: false });
+    }
+
+    return sendResponse(res, 200, null, {
+      isLoggedIn: true,
+      user,
+    });
+  } catch (error) {
+    console.error(error);
+    return sendResponse(res, 500, "Server error", { isLoggedIn: false });
+  }
+};
 
 export {
   generateTokens,
@@ -301,5 +308,5 @@ export {
   deleteUser,
   updateUser,
   refreshAccessToken,
-  isLoggedIn
+  isLoggedIn,
 };

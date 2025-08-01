@@ -12,6 +12,7 @@ const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About.jsx"));
 const BlogDashboard = lazy(() => import("./pages/BlogDashboard.jsx"));
 const Example = lazy(() => import("./pages/Example.jsx"));
+const Profile = lazy(() => import("./pages/Profile.jsx"))
 import Loading from "./components/Loading.jsx";
 import BlogCard from "./components/BlogCard.jsx";
 
@@ -44,6 +45,7 @@ const App = () => {
           <Route element={<AuthLayout />}>
             <Route path="app" element={<Layout />}>
               <Route index element={<BlogDashboard />} />
+              <Route path="profile/:id" element={<Profile />}/>
               <Route path="example" element={<Example />} />
             </Route>
           </Route>
