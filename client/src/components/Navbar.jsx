@@ -115,7 +115,9 @@ const Navbar = () => {
                   return (
                     <div
                       key={index}
-                      onClick={item.action}
+                      onClick={ () => {item.action;
+                      setIsMenuOpen(false);}
+                      }
                       className="p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between cursor-pointer text-red-500 hover:bg-red-100"
                     >
                       {item.label}
@@ -128,6 +130,7 @@ const Navbar = () => {
                     <Link
                       to={item.to}
                       key={index}
+                      onClick={() => setIsMenuOpen(false)}
                       className="p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between text-primary hover:bg-base-100"
                     >
                       {item.label}

@@ -12,8 +12,9 @@ const Home = lazy(() => import("./pages/Home"));
 const About = lazy(() => import("./pages/About.jsx"));
 const BlogDashboard = lazy(() => import("./pages/BlogDashboard.jsx"));
 const Example = lazy(() => import("./pages/Example.jsx"));
-const Profile = lazy(() => import("./pages/Profile.jsx"))
-import Loading from "./components/Loading.jsx";
+const Profile = lazy(() => import("./pages/Profile.jsx"));
+const ViewBlog = lazy(() => import("./pages/ViewBlog.jsx"));
+const CreateBlogPost = lazy(() => import("./pages/CreateBlogPost.jsx"))
 import BlogCard from "./components/BlogCard.jsx";
 
 // Lazy Load Layouts
@@ -38,7 +39,7 @@ const App = () => {
             <Route path="about" element={<About />} />
             <Route path="signup" element={<Signup />} />
             <Route path="login" element={<Login />} />
-            <Route path="loading" element={<BlogCard />} />
+            {/* <Route path="loading" element={<CreateBlogPost />} /> */}
           </Route>
 
           {/* Protected Routes */}
@@ -46,6 +47,8 @@ const App = () => {
             <Route path="app" element={<Layout />}>
               <Route index element={<BlogDashboard />} />
               <Route path="profile/:id" element={<Profile />}/>
+              <Route path="create" element={<CreateBlogPost />} />
+              <Route path="blogs/:id" element={<ViewBlog />} />
               <Route path="example" element={<Example />} />
             </Route>
           </Route>

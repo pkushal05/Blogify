@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUserMessages } from "../features/slices/userSlice.js";
+// import { clearBlogMessages } from "../features/slices/blogSlice.js";
 
 // Icons
 import {
@@ -27,7 +28,6 @@ const BlogDashboard = () => {
       setBlogs(user.blogs);
     }
   }, [user]);
-
 
   useEffect(() => {
     if (showSuccessMessage) {
@@ -138,7 +138,7 @@ const BlogDashboard = () => {
           </div>
           <div>
             <Link
-              to={"/create"}
+              to={"create"}
               className="btn btn-neutral btn-sm inline-flex whitespace-nowrap lg:btn-lg hover:text-base-content hover:shadow-xl"
             >
               <FilePlus2 /> Create

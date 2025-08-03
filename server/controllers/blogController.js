@@ -5,7 +5,6 @@ import { handlePhotoUpload, handlePhotoDelete } from "../utils/cloudinary.js";
 
 const createBlog = async (req, res) => {
   try {
-    console.log("first")
     const { title, content, category } = req.body;
     const author = req.user._id;
 
@@ -13,33 +12,32 @@ const createBlog = async (req, res) => {
     if (!title || !content) {
       return sendError(res, 400, "Title and content are required.");
     }
-    console.log("second")
 
     if (title.length < 5 || title.length > 100) {
       return sendError(res, 400, "Title must be between 5 to 100 characters.");
     }
     if (content.length < 50 || content.length > 20000) {
-      return sendError(res, 400, "Content must be between 50 to 20000 characters.");
-    }  
+      return sendError(
+        res,
+        400,
+        "Content must be between 50 to 20000 characters."
+      );
+    }
 
-    console.log(category)
     if (!["Technology", "Design", "Lifestyle", "Business"].includes(category)) {
       return sendError(res, 400, "Invalid category.");
-    }   
+    }
 
-    console.log("third")
     // Handle thumbnail upload if provided
     let thumbnail = "";
     if (req.file) {
       const uploadResult = await handlePhotoUpload(req.file.path);
       thumbnail = uploadResult.secure_url;
     }
-    console.log("fourth")
     // If no thumbnail is provided, set default
     if (!thumbnail) {
       thumbnail = "default_thumbnail_url";
     }
-    console.log("fifth")
     // Create new blog
     const newBlog = await Blog.create({
       title,
@@ -48,13 +46,14 @@ const createBlog = async (req, res) => {
       category,
       author,
     });
-    console.log("sixth")
-    return sendResponse(res, 201, "Blog created successfully", { blog: newBlog });
+    return sendResponse(res, 201, "Blog published successfully", {
+      blog: newBlog,
+    });
   } catch (error) {
     console.error(error);
     return sendError(res, 500, "Internal server error");
   }
-}
+};
 
 const getAllBlogs = async (req, res) => {
   try {
@@ -71,7 +70,10 @@ const getAllBlogs = async (req, res) => {
 
 const getBlogById = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate("author", "userName profilePic");
+    const blog = await Blog.findById(req.params.id).populate(
+      "author",
+      "userName profilePic"
+    );
     if (!blog) {
       return sendError(res, 404, "Blog not found");
     }
@@ -150,32 +152,39 @@ const deleteBlog = async (req, res) => {
 };
 
 const getComments = async (req, res) => {
-    try {
-        const blog = await Blog.findById(req.params.id).populate({
-            path: 'comments',
-            select: 'content author createdAt',
-            populate: {
-                path: 'author',
-                select: 'userName profilePic'
-            }
-        });
-        if (!blog) {
-            return sendError(res, 404, "Blog not found");
-        }   
-        return sendResponse(res, 200, "Comments fetched successfully", { comments: blog.comments });
-    } catch (error) {
-        console.error(error);
-        return sendError(res, 500, "Internal server error");
-    }
-}
-
-const getAuthorDetails = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate("author", "userName profilePic");
+    const blog = await Blog.findById(req.params.id).populate({
+      path: "comments",
+      select: "content author createdAt",
+      populate: {
+        path: "author",
+        select: "userName profilePic",
+      },
+    });
     if (!blog) {
       return sendError(res, 404, "Blog not found");
     }
-    return sendResponse(res, 200, "Author details fetched successfully", { author: blog.author });
+    return sendResponse(res, 200, "Comments fetched successfully", {
+      comments: blog.comments,
+    });
+  } catch (error) {
+    console.error(error);
+    return sendError(res, 500, "Internal server error");
+  }
+};
+
+const getAuthorDetails = async (req, res) => {
+  try {
+    const blog = await Blog.findById(req.params.id).populate(
+      "author",
+      "userName profilePic"
+    );
+    if (!blog) {
+      return sendError(res, 404, "Blog not found");
+    }
+    return sendResponse(res, 200, "Author details fetched successfully", {
+      author: blog.author,
+    });
   } catch (error) {
     console.error(error);
     return sendError(res, 500, "Internal server error");
@@ -184,13 +193,15 @@ const getAuthorDetails = async (req, res) => {
 
 const getTotalLikes = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id)
+    const blog = await Blog.findById(req.params.id);
 
     if (!blog) {
       return sendError(res, 404, "Blog not found");
     }
     let totalLikes = blog.likes.length;
-    return sendResponse(res, 200, "Likes fetched successfully", { likes: totalLikes });
+    return sendResponse(res, 200, "Likes fetched successfully", {
+      likes: totalLikes,
+    });
   } catch (error) {
     console.error(error);
     return sendError(res, 500, "Internal server error");
@@ -209,15 +220,27 @@ const addLike = async (req, res) => {
     }
     blog.likes.push(req.user._id);
     user.likes.push(blog._id);
-  
+
     await blog.save();
     await user.save();
-    
-    return sendResponse(res, 200, "Blog liked successfully", { likes: blog.likes.length });
+
+    return sendResponse(res, 200, "Blog liked successfully", {
+      likes: blog.likes.length,
+    });
   } catch (error) {
     console.error(error);
     return sendError(res, 500, "Internal server error");
   }
 };
 
-export { createBlog, getAllBlogs, getBlogById, updateBlog, deleteBlog, getComments, getAuthorDetails, getTotalLikes, addLike };
+export {
+  createBlog,
+  getAllBlogs,
+  getBlogById,
+  updateBlog,
+  deleteBlog,
+  getComments,
+  getAuthorDetails,
+  getTotalLikes,
+  addLike,
+};

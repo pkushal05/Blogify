@@ -5,6 +5,7 @@ import {
   register,
   update,
 } from "../thunks/userThunks.js";
+import { create } from "../thunks/blogThunks.js";
 
 const initialState = {
   isLoggedIn: false,
@@ -97,6 +98,13 @@ const userSlice = createSlice({
         state.message = action.error.message || "Failed to update";
         state.user = null;
         state.showSuccessMessage = false;
+      })
+      .addCase(create.fulfilled, (state, action) => {
+        if (state.user?.blogs) {
+          state.user.blogs.push(action.payload.blog);
+        }
+        state.message = action.payload.message;
+        state.showSuccessMessage = true;
       });
   },
 });
