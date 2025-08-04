@@ -12,6 +12,7 @@ import {
   MessageCircle,
   Filter,
   FilePlus2,
+  X,
 } from "lucide-react";
 
 //Component
@@ -19,9 +20,15 @@ import BlogCard from "../components/BlogCard.jsx";
 
 const BlogDashboard = () => {
   const dispatch = useDispatch();
-  const { message, showSuccessMessage, user } = useSelector((state) => state.user);
+  const { message, showSuccessMessage, user } = useSelector(
+    (state) => state.user
+  );
   const [filterOpen, setFilterOpen] = useState(false);
-  const [ blogs, setBlogs ] = useState([]);
+  const [blogs, setBlogs] = useState([]);
+  const [selectedCategory, setSelectedCategory] = useState(null);
+  const [filteredBlogs, setFilteredBlogs] = useState([]);
+
+  const categories = ["Technology", "Lifestyle", "Travel", "Food"];
 
   useEffect(() => {
     if (user?.blogs) {
@@ -30,13 +37,34 @@ const BlogDashboard = () => {
   }, [user]);
 
   useEffect(() => {
+    if (selectedCategory) {
+      const filtered = blogs.filter(
+        (blog) => blog.category === selectedCategory
+      );
+      setFilteredBlogs(filtered);
+    }
+  }, [selectedCategory, blogs]);
+
+  useEffect(() => {
     if (showSuccessMessage) {
       const timer = setTimeout(() => {
         dispatch(clearUserMessages());
-      }, 3000)
+      }, 3000);
       return () => clearTimeout(timer);
     }
-  }, [showSuccessMessage, dispatch])
+  }, [showSuccessMessage, dispatch]);
+
+  const handleCategoryFilter = (category) => {
+    setSelectedCategory(category);
+    setFilterOpen(false);
+  };
+
+  const clearFilter = () => {
+    setSelectedCategory(null);
+    setFilteredBlogs([]);
+  };
+
+  const blogsToShow = selectedCategory ? filteredBlogs : blogs;
 
   return (
     <div className="w-full min-h-screen bg-base-300 font-[Poppins] text-neutral">
@@ -122,16 +150,15 @@ const BlogDashboard = () => {
             {filterOpen && (
               <div className="absolute top-full mt-2 left-0 bg-base-300 border border-base-content/10 rounded-xl shadow-xl p-4 min-w-48 z-10">
                 <div className="flex flex-col gap-2">
-                  {["Technology", "Lifestyle", "Design", "Business"].map(
-                    (category) => (
-                      <button
-                        key={category}
-                        className="btn btn-ghost btn-sm sm:btn-md lg:btn-lg justify-start text-primary font-medium hover:bg-base-300 hover:scale-95 transition-all duration-200"
-                      >
-                        {category}
-                      </button>
-                    )
-                  )}
+                  {categories.map((category) => (
+                    <button
+                      key={category}
+                      onClick={() => handleCategoryFilter(category)}
+                      className="btn btn-ghost btn-sm sm:btn-md lg:btn-lg justify-start text-primary font-medium hover:bg-base-300 hover:scale-95 transition-all duration-200"
+                    >
+                      {category}
+                    </button>
+                  ))}
                 </div>
               </div>
             )}
@@ -152,12 +179,29 @@ const BlogDashboard = () => {
           transition={{ duration: 0.8 }}
         >
           <div className="max-w-7xl mx-auto p-5">
-            <h2 className="text-2xl font-medium mb-4 select-none">My Blogs</h2>
-            {blogs.length === 0 ? (
-              <div className="text-neutral/50 text-lg my-10 select-none ">You haven't posted yet. 🥹</div>
+            <div className="flex items-center justify-between mb-4">
+              <h2 className="text-2xl font-medium select-none">
+                {selectedCategory ? `Blogs in ${selectedCategory}` : "My Blogs"}
+              </h2>
+              {selectedCategory && (
+                <button
+                  onClick={clearFilter}
+                  className="btn btn-sm btn-ghost text-base-content/70 hover:text-base-content"
+                >
+                  <X size={16} />
+                  Clear Filter
+                </button>
+              )}
+            </div>
+            {blogsToShow.length === 0 ? (
+              <div className="text-neutral/50 text-lg my-10 select-none">
+                {selectedCategory
+                  ? `No blogs found in ${selectedCategory} category. 📝`
+                  : "You haven't posted yet. 🥹"}
+              </div>
             ) : (
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                {blogs.map((item, idx) => {
+                {blogsToShow.map((item, idx) => {
                   return (
                     <BlogCard
                       key={idx}

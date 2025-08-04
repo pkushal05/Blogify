@@ -13,6 +13,7 @@ const CreateBlogPost = () => {
     (state) => state.blog
   );
   const navigate = useNavigate();
+  const [ redirect, setRedirect ] = useState(false);
   const [formData, setFormData] = useState({
     thumbnail: null,
     title: "",
@@ -54,9 +55,19 @@ const CreateBlogPost = () => {
       newErrors.title = "Title is required";
     }
 
+    if (formData.title.length < 5 || formData.title.length > 100) {
+      newErrors.title = "Title must be between 5 to 100 characters";
+    }
+
+
     if (!formData.content.trim()) {
       newErrors.content = "Content is required";
     }
+
+    if (formData.content.length < 50 || formData.content.length > 20000) {
+      newErrors.content = "Content must be between 50 to 20000 characters";
+    }
+
 
     if (!formData.category) {
       newErrors.category = "Please select a category";
@@ -95,11 +106,15 @@ const CreateBlogPost = () => {
         category: "",
       });
       setPreview("");
-      navigate("/app")
+      setRedirect(true);
     } catch (error) {
       console.error("Failed to create blog:", error);
     }
   };
+
+  if (redirect) {
+    return navigate("/app");
+  }
 
   const categories = ["Technology", "Lifestyle", "Design", "Business"];
 
@@ -268,7 +283,7 @@ const CreateBlogPost = () => {
                 type="submit"
                 disabled={loading}
                 className={`btn btn-primary flex-1 sm:flex-none sm:px-8 ${
-                  loading ? "loading" : ""
+                  loading && "opacity-80 cursor-not-allowed "
                 }`}
               >
                 {loading ? "Publishing..." : "Publish Post"}

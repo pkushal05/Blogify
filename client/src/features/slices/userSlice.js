@@ -5,7 +5,7 @@ import {
   register,
   update,
 } from "../thunks/userThunks.js";
-import { create } from "../thunks/blogThunks.js";
+import { create, makeComment } from "../thunks/blogThunks.js";
 
 const initialState = {
   isLoggedIn: false,
@@ -105,7 +105,14 @@ const userSlice = createSlice({
         }
         state.message = action.payload.message;
         state.showSuccessMessage = true;
-      });
+      })
+      .addCase(makeComment.fulfilled, (state, action) => {
+        if (state.user?.comments) {
+          state.user.comments.push(action.payload.comment);
+        }
+        state.message = action.payload.message;
+        state.showSuccessMessage = true;
+      })
   },
 });
 

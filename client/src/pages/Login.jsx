@@ -70,7 +70,6 @@ const Login = () => {
   }, [message]);
 
   if (isLoggedIn) {
-    console.log(isLoggedIn)
     return <Navigate to="/app" replace />;
   }
 

@@ -7,7 +7,7 @@ import { verifyJWT } from "../middlewares/authMiddleware.js";
 
 const router = Router();
 
-router.post("/:blogId", verifyJWT, createComment);
-router.get("/:blogId", getComments);
+router.post("/:id", verifyJWT, createComment);
+router.get("/:id", getComments);
 
 export default router;

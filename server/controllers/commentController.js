@@ -6,7 +6,7 @@ import User from "../models/userModel.js";
 const createComment = async (req, res) => {
   try {
     const { content } = req.body;
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
     const userId = req.user._id;
 
     // Validate blog existence
@@ -33,6 +33,8 @@ const createComment = async (req, res) => {
       blog: blogId,
     });
 
+    await newComment.populate("author", "userName profilePic");
+
     user.comments.push(newComment._id);
     blog.comments.push(newComment._id);
     await user.save();
@@ -48,7 +50,7 @@ const createComment = async (req, res) => {
 
 const getComments = async (req, res) => {
   try {
-    const blogId = req.params.blogId;
+    const blogId = req.params.id;
 
     // Validate blog existence
     const blog = await Blog.findById(blogId);

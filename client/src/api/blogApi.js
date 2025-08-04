@@ -13,3 +13,16 @@ export const createBlog = async (formData) => {
   }
   return data;
 };
+
+export const getBlog = async (id) => {
+  const res = await fetch(`${BASE_URL}/${id}`, {
+    method: "GET",
+    credentials: "include"
+  });
+
+  const data = await res.json();
+  if (!res.ok) {
+    throw new Error(data.message || "Failed to fetch blog");
+  }
+  return data;
+}

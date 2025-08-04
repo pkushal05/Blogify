@@ -17,7 +17,7 @@ const router = Router();
 
 router.post("/", verifyJWT, upload.single("thumbnail"), createBlog);
 router.get("/", getAllBlogs);
-router.get("/:id", getBlogById);
+router.get("/:id", verifyJWT, getBlogById);
 router.patch("/:id", verifyJWT, upload.single("thumbnail"), updateBlog);
 router.delete("/:id", verifyJWT, deleteBlog);
 router.get("/:id/comments", getComments);

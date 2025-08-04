@@ -70,18 +70,24 @@ const getAllBlogs = async (req, res) => {
 
 const getBlogById = async (req, res) => {
   try {
-    const blog = await Blog.findById(req.params.id).populate(
-      "author",
-      "userName profilePic"
-    );
+    const { id } = req.params;
+    const blog = await Blog.findById(id)
+      .populate("author", "userName profilePic")
+      .populate({
+        path: "comments",
+        populate: {
+          path: "author", 
+          select: "userName profilePic", 
+        },
+      });
+
     if (!blog) {
       return sendError(res, 404, "Blog not found");
     }
-
     return sendResponse(res, 200, "Blog fetched successfully", { blog });
   } catch (error) {
     console.error(error);
-    return sendError(res, 500, "Internal server error");
+    return sendError(res, 500, "Internal hiii server error");
   }
 };
 

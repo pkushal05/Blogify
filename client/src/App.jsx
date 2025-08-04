@@ -32,6 +32,7 @@ const App = () => {
           </div>
         }
       >
+        <ScrollToTop />
         <Routes>
           {/* Public Routes */}
           <Route element={<GuestLayout />}>
