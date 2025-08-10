@@ -1,5 +1,5 @@
 // Base URL for comment-related API endpoints
-const BASE_URL = "http://localhost:3000/api/v1/comments";
+const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/comments`;
 
 /**
  * Creates a comment for a specific blog post.

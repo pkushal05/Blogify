@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { clearMessage } from "../features/slices/authSlice.js";
+import BlogCard from "../components/BlogCard.jsx";
 //Icons
 import { PenTool, Image, Zap, MessageCircle, SquarePen } from "lucide-react";
 import { FaLinkedin } from "react-icons/fa";
@@ -10,7 +11,6 @@ import { Github, Instagram, Mail } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 // Assests
 import blogify_logo_white from "../assets/blogify_logo_white.svg";
-import blogify_logo from "../assets/blogify_logo.svg";
 
 /**
  * Home Component - Landing page for Blogify application
@@ -44,6 +44,50 @@ const Home = () => {
       return () => clearTimeout(timer);
     }
   }, [showSuccessMessage, dispatch]);
+
+  // Mock Data to show Recent blogs
+  // mock data — add this above your component's return
+  const mockBlogs = [
+    {
+      _id: "b1",
+      title: "The Future of AI in Web Development",
+      content:
+        "Artificial Intelligence is reshaping the web — from code generation to UX personalization. Practical tips to adopt AI safely.",
+      thumbnail:
+        "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80&fm=jpg&fit=crop",
+      authorName: "Frank Flores",
+      authorPic:
+        "https://plus.unsplash.com/premium_photo-1671656349322-41de944d259b?q=80&w=3087&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      category: "Technology",
+      date: "2025-07-23",
+    },
+    {
+      _id: "b2",
+      title: "Minimalist Design Principles for Modern Websites",
+      content:
+        "Minimalism helps you focus on content. A practical checklist to reduce visual clutter and increase conversion.",
+      thumbnail:
+        "https://images.unsplash.com/photo-1499750310107-5fef28a66643?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      authorName: "Ava Stone",
+      authorPic:
+        "https://images.unsplash.com/photo-1580489944761-15a19d654956?q=80&w=3161&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      category: "Design",
+      date: "2025-07-20",
+    },
+    {
+      _id: "b3",
+      title: "Building Healthy Work-Life Balance in Tech",
+      content:
+        "Strategies, routines and small habits that helped developers reclaim time without sacrificing career growth.",
+      thumbnail:
+        "https://images.unsplash.com/photo-1515378791036-0648a3ef77b2?w=1200&q=80&fm=jpg&fit=crop",
+      authorName: "John Doe",
+      authorPic:
+        "https://images.unsplash.com/photo-1506277886164-e25aa3f4ef7f?q=80&w=3135&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D",
+      category: "Lifestyle",
+      date: "2025-07-15",
+    },
+  ];
 
   return (
     <div id="home" className="w-full min-h-screen bg-base-300">
@@ -166,33 +210,28 @@ const Home = () => {
           </h2>
 
           {/* Demo blog cards for showcase purposes */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-            {[1, 2, 3].map((_, index) => (
-              <div
-                key={index}
-                className="card bg-base-100 shadow-md hover:shadow-xl transition rounded-lg overflow-hidden"
-              >
-                <div className="h-40 bg-neutral"></div>{" "}
-                {/* Replace with image */}
-                <div className="card-body">
-                  <h3 className="card-title text-xl text-neutral-content">
-                    Blog Title Here
-                  </h3>
-                  <p className="text-neutral-content text-sm">
-                    by John Doe • Jul 23, 2025
-                  </p>
-                  <p className="mt-2 text-neutral-content text-sm line-clamp-2">
-                    A short description of the blog goes here. Just enough to
-                    hook the reader's interest...
-                  </p>
-                  <div className="mt-4">
-                    <button className="btn btn-sm bg-primary text-primary-content hover:bg-primary-content hover:text-primary">
-                      Read More
-                    </button>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 select-none"
+          onClick={() => {}}
+          >
+            {
+              mockBlogs.map((item, idx) => {
+                return (
+                  <div onClickCapture={(e) => {e.preventDefault()}}>
+                    <BlogCard
+                      key={idx}
+                      id={item._id}
+                      thumbnail={item.thumbnail}
+                      title={item.title}
+                      content={item.content}
+                      authorPic={item.authorPic}
+                      authorName={item.authorName}
+                      category={item.category}
+                      date={item.date}
+                    />
                   </div>
-                </div>
-              </div>
-            ))}
+                );
+              })
+            }
           </div>
         </div>
       </motion.div>

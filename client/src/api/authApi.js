@@ -1,5 +1,5 @@
 // Base URL for all authentication-related API endpoints
-const BASE_URL = "http://localhost:3000/api/v1/auth";
+const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/auth`;
 
 /**
  * Logs out the current user by sending a POST request to the logout endpoint.

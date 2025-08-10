@@ -18,7 +18,6 @@ const About = lazy(() => import("./pages/About.jsx"));
 
 // Protected app pages
 const BlogDashboard = lazy(() => import("./pages/BlogDashboard.jsx"));
-const Example = lazy(() => import("./pages/Example.jsx"));
 const Profile = lazy(() => import("./pages/Profile.jsx"));
 const ViewBlog = lazy(() => import("./pages/ViewBlog.jsx"));
 const CreateBlogPost = lazy(() => import("./pages/CreateBlogPost.jsx"));

@@ -19,6 +19,15 @@ const GuestNavbar = () => {
   // Track last scroll position to determine scroll direction
   const [lastScrollY, setLastScrollY] = useState(0);
 
+  // Nav-links
+  const navLinks = [
+    { tag: "Home", link: "/" },
+    { tag: "About", link: "about" },
+    { tag: "Contact", link: "mailto:patelkushal2363@gmail.com" },
+  ];
+
+  //className="text-[2.8vh] hover:text-base-200"
+
   useEffect(() => {
     // Scroll handler to show/hide navbar based on scroll direction and position
     const handleScroll = () => {
@@ -69,18 +78,19 @@ const GuestNavbar = () => {
               />
             </Link>
           </div>
-
           {/* Desktop Navigation links */}
           <nav className="hidden lg:flex space-x-10 -ml-35">
-            {["Home", "About", "Contact"].map((item, index) => (
-              <Link
-                to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
-                key={index}
-                className="text-[2.8vh] hover:text-base-200"
-              >
-                {item}
-              </Link>
-            ))}
+            {navLinks.map((item, idx) => {
+              return (
+                <Link
+                  key={idx}
+                  className="text-[2.8vh] hover:text-base-200"
+                  to={item.link}
+                >
+                  {item.tag}
+                </Link>
+              );
+            })}
           </nav>
 
           {/* Login button and mobile menu toggle */}

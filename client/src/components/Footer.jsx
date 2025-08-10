@@ -24,7 +24,7 @@ const Footer = () => {
   // Footer navigation links
   const links = [
     { name: "About", link: "/about" },
-    { name: "Contact", link: "/contact" },
+    { name: "Contact", link: "mailto:patelkushal2363@gmail.com" },
     { name: "Privacy Policy", link: "#" },
     { name: "Terms of Service", link: "#" },
   ];
