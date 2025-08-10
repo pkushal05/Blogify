@@ -9,7 +9,7 @@ import {
   getBlogs,
 } from "../thunks/blogThunks.js";
 
-// Initial state for the blog slice
+// Initial state for the blog slice in store
 const initialState = {
   message: null, // message for success or error feedback
   currentBlog: null, // currently viewed blog details
