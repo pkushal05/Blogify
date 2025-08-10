@@ -9,5 +9,5 @@
 
 /* Enable DaisyUI plugin with custom themes: light (default), dark (prefers dark mode), and silk */
 @plugin "daisyui" {
-  themes: light --default, dark --prefersdark, silk
+  themes: light --default, dark --prefersdark, silk;
 }
