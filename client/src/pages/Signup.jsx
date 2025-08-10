@@ -2,11 +2,10 @@ import React from "react";
 import { Link, Navigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { register } from "../features/thunks/userThunks.js";
+import { login, register } from "../features/thunks/userThunks.js";
 import { Eye, EyeOff, House } from "lucide-react";
 
 const Signup = () => {
-
   const { isLoggedIn, loading, message } = useSelector((state) => state.user);
   const dispatch = useDispatch();
   const [formData, setFormData] = useState({
@@ -53,14 +52,34 @@ const Signup = () => {
       setErrors(newErrors);
       return;
     }
-    setIsLoading(loading);
+    setIsLoading(true);
     setErrors({});
+
     const userData = {
       userName: formData.userName,
       email: formData.email,
       password: formData.password,
     };
-    dispatch(register(userData));
+
+    try {
+      const registerResult = await dispatch(register(userData));
+
+      // Check if registration was successful
+      if (register.fulfilled.match(registerResult)) {
+        // Only login if registration succeeded
+        setTimeout(async () => {
+          await dispatch(
+            login({ email: formData.email, password: formData.password })
+          );
+          setIsLoading(false);
+        }, 1000);
+      } else {
+        // Registration failed, don't attempt login
+        setIsLoading(false);
+      }
+    } catch (error) {
+      setIsLoading(false);
+    }
   };
 
   useEffect(() => {
@@ -76,9 +95,9 @@ const Signup = () => {
     }
   }, [message]);
 
-   if (isLoggedIn) {
-     return <Navigate to="/app" replace />;
-   }
+  if (isLoggedIn) {
+    return <Navigate to={"/app"} replace />;
+  }
 
   return (
     <div className=" relative min-h-screen flex items-center justify-center bg-base-300 p-4">
@@ -232,7 +251,7 @@ const Signup = () => {
       {errors.form && (
         <div className="absolute bottom-12 left-1/2 transform -translate-x-1/2 bg-red-100 text-red-800 p-3 rounded-lg shadow-md">
           {errors.form}
-        </div>  
+        </div>
       )}
     </div>
   );

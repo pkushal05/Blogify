@@ -5,7 +5,13 @@ import {
   register,
   update,
 } from "../thunks/userThunks.js";
-import { create, makeComment } from "../thunks/blogThunks.js";
+import {
+  create,
+  makeComment,
+  like,
+  deleteThunk,
+} from "../thunks/blogThunks.js";
+import { act } from "react";
 
 const initialState = {
   isLoggedIn: false,
@@ -30,6 +36,7 @@ const userSlice = createSlice({
         state.loading = true;
         state.message = null;
         state.showSuccessMessage = false;
+        state.user = null;
       })
       .addCase(login.fulfilled, (state, action) => {
         state.loading = false;
@@ -48,11 +55,11 @@ const userSlice = createSlice({
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.message = null;
+        state.user = null;
         state.showSuccessMessage = false;
       })
       .addCase(register.fulfilled, (state, action) => {
-        state.isLoggedIn = true;
-        state.loading = false;
+        state.loading = true;
         state.user = action.payload.user;
         state.message = action.payload.message;
         state.showSuccessMessage = true;
@@ -66,7 +73,6 @@ const userSlice = createSlice({
       })
       .addCase(checkLoginStatus.pending, (state) => {
         state.loading = true;
-        state.user = null;
       })
       .addCase(checkLoginStatus.fulfilled, (state, action) => {
         state.loading = false;
@@ -108,11 +114,33 @@ const userSlice = createSlice({
       })
       .addCase(makeComment.fulfilled, (state, action) => {
         if (state.user?.comments) {
-          state.user.comments.push(action.payload.comment);
+          if (!state.user.comments.includes(action.payload.comment.blog)) {
+            state.user.comments.push(action.payload.comment.blog);
+          }
+        }
+      })
+      .addCase(like.fulfilled, (state, action) => {
+        if (state.user?.likes) {
+          state.user.likes = action.payload.userLikes;
+        }
+      })
+      .addCase(deleteThunk.fulfilled, (state, action) => {
+        if (state.user) {
+          state.user.blogs = state.user.blogs.filter(
+            (blog) => blog._id !== action.payload.id
+          );
+          state.user.likes = state.user.likes.filter(
+            (blogId) => blogId !== action.payload.id
+          );
+          state.user.comments = state.user.comments.filter(
+            (blogId) => blogId !== action.payload.id
+          );
+          
         }
         state.message = action.payload.message;
         state.showSuccessMessage = true;
-      })
+        
+      });
   },
 });
 

@@ -1,5 +1,6 @@
 import Blog from "../models/blogModel.js";
 import User from "../models/userModel.js";
+import Comment from "../models/commentModel.js";
 import { sendResponse, sendError } from "../utils/helperFunctions.js";
 import { handlePhotoUpload, handlePhotoDelete } from "../utils/cloudinary.js";
 
@@ -57,16 +58,29 @@ const createBlog = async (req, res) => {
 
 const getAllBlogs = async (req, res) => {
   try {
-    const blogs = await Blog.find().populate("author", "userName profilePic");
+    const { q } = req.query; // read search term from query params
+
+    let filter = {};
+    if (q) {
+      filter.title = { $regex: q, $options: "i" }; // case-insensitive search
+    }
+
+    const blogs = await Blog.find(filter).populate(
+      "author",
+      "userName profilePic"
+    );
+
     if (!blogs || blogs.length === 0) {
       return sendError(res, 404, "No blogs found");
     }
+
     return sendResponse(res, 200, "Blogs fetched successfully", { blogs });
   } catch (error) {
     console.error(error);
     return sendError(res, 500, "Internal server error");
   }
 };
+
 
 const getBlogById = async (req, res) => {
   try {
@@ -139,18 +153,36 @@ const updateBlog = async (req, res) => {
 
 const deleteBlog = async (req, res) => {
   try {
-    const blog = await Blog.findOneAndDelete({ _id: req.params.id });
+    const blog = await Blog.findById(req.params.id);
     if (!blog) {
       return sendError(res, 404, "Blog not found");
     }
     if (blog.author.toString() !== req.user._id.toString()) {
       return sendError(res, 403, "You are not authorized to delete this blog");
     }
+
+    // Delete the blog
+    await Blog.findByIdAndDelete(req.params.id);
+
     // Delete the thumbnail from Cloudinary if it exists
     if (blog.thumbnail) {
       await handlePhotoDelete(blog.thumbnail);
     }
-    return sendResponse(res, 200, "Blog deleted successfully");
+    await User.updateMany(
+      { likes: req.params.id },
+      { $pull: { likes: req.params.id } }
+    );
+
+    await User.updateMany(
+      { comments: req.params.id },
+      { $pull: { comments: req.params.id } }
+    );
+
+    await Comment.deleteMany({ blog: req.params.id });
+
+    return sendResponse(res, 200, "Blog deleted successfully", {
+      id: req.params.id,
+    });
   } catch (error) {
     console.error(error);
     return sendError(res, 500, "Internal server error");
@@ -231,7 +263,9 @@ const addLike = async (req, res) => {
     await user.save();
 
     return sendResponse(res, 200, "Blog liked successfully", {
-      likes: blog.likes.length,
+      blogLikesCount: blog.likes.length,
+      userLikes: user.likes, 
+      isLiked: true,
     });
   } catch (error) {
     console.error(error);

@@ -1,19 +1,20 @@
 import React, { useEffect, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 
-import { create } from "../features/thunks/blogThunks.js";
+import { get, editBlog } from "../features/thunks/blogThunks.js";
 
 // Icons
 import { Upload } from "lucide-react";
 
-const CreateBlogPost = () => {
+const EditBlog = () => {
   const dispatch = useDispatch();
-  const { message, blog, showSuccessMessage, loading } = useSelector(
+  const { id } = useParams();
+  const { message, currentBlog, showSuccessMessage, loading } = useSelector(
     (state) => state.blog
   );
   const navigate = useNavigate();
-  const [ redirect, setRedirect ] = useState(false);
+  const [redirect, setRedirect] = useState(false);
   const [formData, setFormData] = useState({
     thumbnail: null,
     title: "",
@@ -31,6 +32,18 @@ const CreateBlogPost = () => {
       setErrors((prev) => ({ ...prev, [name]: "" }));
     }
   };
+
+  useEffect(() => {
+    if (currentBlog) {
+      setFormData({
+        thumbnail: currentBlog.thumbnail,
+        title: currentBlog.title || "",
+        content: currentBlog.content || "",
+        category: currentBlog.category || "",
+      });
+      setPreview(currentBlog.thumbnail || "");
+    }
+  }, [currentBlog]);
 
   const handlePreview = (e) => {
     const file = e.target.files[0];
@@ -59,7 +72,6 @@ const CreateBlogPost = () => {
       newErrors.title = "Title must be between 5 to 100 characters";
     }
 
-
     if (!formData.content.trim()) {
       newErrors.content = "Content is required";
     }
@@ -67,7 +79,6 @@ const CreateBlogPost = () => {
     if (formData.content.length < 50 || formData.content.length > 20000) {
       newErrors.content = "Content must be between 50 to 20000 characters";
     }
-
 
     if (!formData.category) {
       newErrors.category = "Please select a category";
@@ -96,9 +107,7 @@ const CreateBlogPost = () => {
     submitData.append("thumbnail", formData.thumbnail);
 
     try {
-      await dispatch(create(submitData));
-
-      // Reset form on success
+      await dispatch(editBlog({id: currentBlog._id, formData: submitData}));
       setFormData({
         thumbnail: null,
         title: "",
@@ -112,11 +121,17 @@ const CreateBlogPost = () => {
     }
   };
 
-  if (redirect) {
-    return navigate("/app");
-  }
+  useEffect(() => {
+    if (id) {
+      dispatch(get(id));
+    }
+  }, [id, dispatch]);
 
   const categories = ["Technology", "Lifestyle", "Design", "Business"];
+
+  if (redirect) {
+    navigate(-1)
+  }
 
   return (
     <div className="w-full min-h-screen bg-base-300 font-[Poppins]">
@@ -125,11 +140,8 @@ const CreateBlogPost = () => {
           {/* Header */}
           <div className="mb-8">
             <h1 className="text-3xl font-bold text-base-content mb-2">
-              Create New Post
+              Edit Blog
             </h1>
-            <p className="text-base-content/70">
-              Share your thoughts with the world
-            </p>
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
@@ -273,7 +285,6 @@ const CreateBlogPost = () => {
 
             {/* Action Buttons */}
             <div className="flex gap-4 pt-6">
-              
               <button
                 type="submit"
                 disabled={loading}
@@ -281,7 +292,7 @@ const CreateBlogPost = () => {
                   loading && "opacity-80 cursor-not-allowed "
                 }`}
               >
-                {loading ? "Publishing..." : "Publish Post"}
+                {loading ? "Updating..." : "Update Post"}
               </button>
             </div>
           </form>
@@ -291,4 +302,4 @@ const CreateBlogPost = () => {
   );
 };
 
-export default CreateBlogPost;
+export default EditBlog;

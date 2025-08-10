@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, Link } from "react-router-dom";
-import { get, makeComment } from "../features/thunks/blogThunks.js";
+import { get, makeComment, like, deleteThunk } from "../features/thunks/blogThunks.js";
+import { clearBlogMessages } from "../features/slices/blogSlice.js";
 import { useSelector, useDispatch } from "react-redux";
 // Icons
 import { MdEditDocument, MdDelete } from "react-icons/md";
@@ -18,12 +19,13 @@ const ViewBlog = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
 
-  const { currentBlog, loading } = useSelector((state) => state.blog);
+  const { currentBlog, loading, showSuccessMessage, message } = useSelector(
+    (state) => state.blog
+  );
   const { user } = useSelector((state) => state.user);
 
   const [author, setAuthor] = useState(false);
   const [isLiked, setIsLiked] = useState(false);
-  const [isBookmarked, setIsBookmarked] = useState(false);
   const [showComments, setShowComments] = useState(false);
   const [newComment, setNewComment] = useState("");
 
@@ -34,11 +36,20 @@ const ViewBlog = () => {
     }
   }, [id, dispatch]); // Fixed dependencies
 
+  useEffect(() => {
+    if (showSuccessMessage) {
+      const timer = setTimeout(() => {
+        dispatch(clearBlogMessages());
+      }, 3000);
+      return () => clearTimeout(timer);
+    }
+  }, [showSuccessMessage, dispatch]);
+
   // Update like status when currentBlog changes
   useEffect(() => {
     if (currentBlog && user) {
       // Check if current user has liked this blog
-      setIsLiked(currentBlog.likes.includes(user._id));
+      setIsLiked(user.likes.includes(currentBlog._id));
     }
   }, [currentBlog, user]);
 
@@ -56,9 +67,23 @@ const ViewBlog = () => {
     }
   }, [currentBlog, user]);
 
+  const handleDelete = async (id) => {
+    const confirmed = window.confirm("Are you sure?");
+    if (!confirmed) return;
+
+    try {
+      await dispatch(deleteThunk(id)).unwrap();
+      navigate("/app");
+    } catch (error) {
+      console.error("Failed to delete blog:", error);
+    }
+  };
+
+
   const handleLike = () => {
-    setIsLiked(!isLiked);
-    // dispatch(likeBlog(currentBlog._id));
+    if (isLiked) return;
+    dispatch(like(id));
+    setIsLiked(true);
   };
 
   const handleShare = () => {
@@ -77,7 +102,7 @@ const ViewBlog = () => {
     e.preventDefault();
     if (!newComment.trim()) return;
 
-    dispatch(makeComment({id: currentBlog._id, content: newComment }));
+    dispatch(makeComment({ id: currentBlog._id, content: newComment }));
     setNewComment("");
   };
 
@@ -108,9 +133,13 @@ const ViewBlog = () => {
     );
   }
 
-
   return (
     <div className="w-full min-h-screen bg-base-300 font-[Poppins] pt-20">
+      {showSuccessMessage && (
+        <div className="absolute z-30 border right-5 top-30 p-5 rounded-3xl text-neutral select-none bg-neutral-content">
+          ✅ {message}
+        </div>
+      )}
       <div className="relative">
         <div className="max-w-4xl mx-auto px-4 py-8">
           {/* Hero Image */}
@@ -176,7 +205,8 @@ const ViewBlog = () => {
                       </button>
                     </Link>
 
-                    <button className={`btn btn-ghost btn-sm`}>
+                    <button onClick={() => handleDelete(currentBlog._id)}
+                     className={`btn btn-ghost btn-sm`}>
                       <MdDelete size={20} />
                     </button>
                   </div>
@@ -186,9 +216,16 @@ const ViewBlog = () => {
 
             {/* Content */}
             <div className="mb-8">
-              <p className="text-base-content leading-relaxed text-lg wrap-break-word">
-                {currentBlog.content}
-              </p>
+              {currentBlog.content
+                .split(/\n{1,}/) // split on one or more blank lines
+                .map((para, i) => (
+                  <p
+                    key={i}
+                    className="text-base-content leading-relaxed text-lg mb-4 wrap-break-word"
+                  >
+                    {para}
+                  </p>
+                ))}
             </div>
 
             {/* Engagement section */}
@@ -269,7 +306,6 @@ const ViewBlog = () => {
 
                 {/* Comments list */}
                 {currentBlog.comments.length > 0 ? (
-                
                   <div className="space-y-4">
                     {currentBlog.comments.map((comment) => (
                       <div

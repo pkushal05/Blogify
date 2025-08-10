@@ -274,14 +274,18 @@ const deleteUser = async (req, res) => {
 const isLoggedIn = async (req, res) => {
   const token = req.cookies.accessToken;
 
-  if (!token || !req.user?._id) {
+  if (!req.user?._id || !token) {
     return sendResponse(res, 401, "Unauthorized", { isLoggedIn: false });
   }
 
   try {
     const user = await User.findById(req.user._id)
-      .populate("blogs")
-      .select("-password -refreshToken");
+      .select("-password -refreshToken")
+      .populate({
+        path: "blogs",
+        options: { sort: { createdAt: -1 } },
+      })
+
 
     if (!user) {
       return sendResponse(res, 404, "User not found", { isLoggedIn: false });

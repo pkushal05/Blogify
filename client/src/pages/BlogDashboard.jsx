@@ -28,7 +28,7 @@ const BlogDashboard = () => {
   const [selectedCategory, setSelectedCategory] = useState(null);
   const [filteredBlogs, setFilteredBlogs] = useState([]);
 
-  const categories = ["Technology", "Lifestyle", "Travel", "Food"];
+  const categories = ["Technology", "Lifestyle", "Business", "Design"];
 
   useEffect(() => {
     if (user?.blogs) {

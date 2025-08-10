@@ -72,7 +72,7 @@ const Profile = () => {
   }, [showSuccessMessage, dispatch]);
 
   return (
-    <div className="w-full min-h-auto relative bg-base-300 font-[Poppins] text-neutral flex items-center justify-center p-4">
+    <div className="w-full min-h-screen relative bg-base-300 font-[Poppins] text-neutral flex items-center justify-center p-4">
       {showSuccessMessage && (
         <div className="absolute z-30 border right-5 top-30 p-5 rounded-3xl text-neutral select-none bg-neutral-content">
           ✅ {message}

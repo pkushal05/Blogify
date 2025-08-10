@@ -52,7 +52,7 @@ const Login = () => {
       return;
     }
 
-    setIsLoading(loading);
+    setIsLoading(true);
     setErrors({});
     dispatch(login(formData));
   };

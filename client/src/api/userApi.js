@@ -44,5 +44,5 @@ export const registerUser = async (userData) => {
   if (!res.ok) {
     throw new Error(data.message || "Registration failed");
   }
-  return data;
+  return data.user;
 };

@@ -35,7 +35,7 @@ const createComment = async (req, res) => {
 
     await newComment.populate("author", "userName profilePic");
 
-    user.comments.push(newComment._id);
+    user.comments.push(blogId);
     blog.comments.push(newComment._id);
     await user.save();
     await blog.save();

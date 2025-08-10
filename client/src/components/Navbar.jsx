@@ -12,12 +12,13 @@ import blogify_logo from "../assets/blogify_logo.svg";
 const Navbar = () => {
   const dispatch = useDispatch();
   const { message, loading } = useSelector((state) => state.auth);
-  const { user } = useSelector((state) => state.user);  
+  const { user } = useSelector((state) => state.user);
   const navigate = useNavigate();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isVisible, setIsVisible] = useState(true);
   const [lastScrollY, setLastScrollY] = useState(0);
+  const [q, setQ] = useState("");
 
   useEffect(() => {
     const handleScroll = () => {
@@ -48,12 +49,23 @@ const Navbar = () => {
   const handleLogOut = async () => {
     try {
       await dispatch(logout());
-      
+      window.location.href = "/";
+
       navigate("/");
     } catch (error) {
       console.log(message);
     }
   };
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    const trimmed = q.trim();
+    const params = new URLSearchParams();
+    if (trimmed) params.set("q", trimmed);
+    navigate(`/app/explore?${params.toString()}`);
+    setQ("")
+  }
+
 
   return (
     <nav
@@ -71,16 +83,20 @@ const Navbar = () => {
         </div>
         <div className="flex items-center gap-3 md:gap-5">
           <div className="relative">
-            <Search
-              size={20}
-              className="absolute left-2 top-2 z-10 pointer-events-none"
-            />
-            <input
-              type="text"
-              name="search"
-              className="border-1 rounded-lg h-9 pr-3 md:h-10 w-20 md:w-48 pl-10 focus:ring-1"
-              placeholder="Search..."
-            />
+            <form onSubmit={handleSearch}>
+              <Search
+                size={20}
+                className="absolute left-2 top-2 z-10 pointer-events-none"
+              />
+              <input
+                type="text"
+                name="search"
+                value={q}
+                onChange={(e) => setQ(e.target.value)}
+                className="border-1 rounded-lg h-9 pr-3 md:h-10 w-20 md:w-48 pl-10 focus:ring-1"
+                placeholder="Search..."
+              />
+            </form>
           </div>
           <div
             className="relative flex items-center gap-2 group p-2 cursor-pointer rounded-lg transition-all duration-300"
@@ -88,7 +104,10 @@ const Navbar = () => {
           >
             <div className="w-8 h-8 md:w-9 md:h-9 rounded-full border-1 overflow-hidden hover:scale-95 transition-all duration-300">
               <img
-                src={user.profilePic}
+                src={
+                  user?.profilePic ||
+                  "https://militaryhealthinstitute.org/wp-content/uploads/sites/37/2021/08/blank-profile-picture-png.png"
+                }
                 alt="User's profile pic"
                 className="w-full h-full object-cover"
               />
@@ -108,16 +127,17 @@ const Navbar = () => {
               {[
                 { label: "Dashboard", to: "/app" },
                 { label: "Profile", to: `profile/${user._id}` },
+                { label: "Explore", to: "explore" },
                 { label: "Logout", action: handleLogOut },
               ].map((item, index) => {
                 if (item.action) {
-                  // For logout - use div with onClick
                   return (
                     <div
                       key={index}
-                      onClick={ () => {item.action;
-                      setIsMenuOpen(false);}
-                      }
+                      onClick={() => {
+                        item.action();
+                        setIsMenuOpen(false);
+                      }}
                       className="p-3 mb-3 hover:scale-95 rounded-lg transition-colors flex justify-between cursor-pointer text-red-500 hover:bg-red-100"
                     >
                       {item.label}
@@ -125,7 +145,6 @@ const Navbar = () => {
                     </div>
                   );
                 } else {
-                  // For other items - use Link
                   return (
                     <Link
                       to={item.to}

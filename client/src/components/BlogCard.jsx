@@ -22,7 +22,7 @@ id,
   };
 
   return (
-    <Link to={`blogs/${id}`}>
+    <Link to={`/app/blogs/${id}`}>
       <div className="card bg-base-100 shadow-lg hover:shadow-2xl transition-shadow duration-300 cursor-pointer">
         <figure className="h-48 overflow-hidden rounded-t-xl">
           <img
@@ -32,8 +32,8 @@ id,
           />
         </figure>
         <div className="card-body p-4">
-          <div className="flex justify-center sm:justify-between items-start mb-1">
-            <h3 className="card-title text-center line-clamp-1 sm:text-left text-base sm:text-lg leading-snug tracking-tight font-medium">
+          <div className="flex justify-center sm:justify-between items-center mb-1">
+            <h3 className="card-title text-center line-clamp-1 sm:text-left text-sm sm:text-base leading-snug tracking-tight font-medium">
               {title}
             </h3>
             <span className="text-xs text-base-content/60 hidden sm:inline">
