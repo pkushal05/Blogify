@@ -3,6 +3,12 @@ import { sendResponse, sendError } from "../utils/helperFunctions.js";
 import Blog from "../models/blogModel.js";
 import User from "../models/userModel.js";
 
+/**
+ * Create a comment for a blog
+ * @param {Request} req - Express request object, expects comment content in body, blog id in params, user from auth middleware
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with created comment or error message
+ */
 const createComment = async (req, res) => {
   try {
     const { content } = req.body;
@@ -35,7 +41,8 @@ const createComment = async (req, res) => {
 
     await newComment.populate("author", "userName profilePic");
 
-    user.comments.push(blogId);
+    // Add references to user and blog documents
+    user.comments.push(newComment._id); // push comment _id, not blogId
     blog.comments.push(newComment._id);
     await user.save();
     await blog.save();
@@ -44,10 +51,17 @@ const createComment = async (req, res) => {
       comment: newComment,
     });
   } catch (error) {
+    console.error(error);
     return sendError(res, 500, "Internal server error");
   }
 };
 
+/**
+ * Get all comments for a specific blog
+ * @param {Request} req - Express request object, expects blog id in params
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with comments array or error message
+ */
 const getComments = async (req, res) => {
   try {
     const blogId = req.params.id;
@@ -58,13 +72,17 @@ const getComments = async (req, res) => {
       return sendError(res, 404, "Blog not found");
     }
 
-    // Fetch comments for the blog
-    const comments = await Comment.find({ blog: blogId }).populate("author", "name");
+    // Fetch comments for the blog, populate author's userName and profilePic
+    const comments = await Comment.find({ blog: blogId }).populate(
+      "author",
+      "userName profilePic"
+    );
 
     return sendResponse(res, 200, "Comments fetched successfully", {
       comments,
     });
   } catch (error) {
+    console.error(error);
     return sendError(res, 500, "Internal server error");
   }
 };

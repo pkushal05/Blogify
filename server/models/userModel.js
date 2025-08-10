@@ -2,8 +2,10 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+// Schema for User collection
 const userSchema = mongoose.Schema(
   {
+    // Unique username, lowercase, trimmed, indexed for faster queries
     userName: {
       type: String,
       required: true,
@@ -12,6 +14,7 @@ const userSchema = mongoose.Schema(
       lowercase: true,
       index: true,
     },
+    // Unique email, lowercase, trimmed
     email: {
       type: String,
       required: true,
@@ -19,16 +22,19 @@ const userSchema = mongoose.Schema(
       trim: true,
       lowercase: true,
     },
+    // Password, required and trimmed
     password: {
       type: String,
       required: [true, "Password is required"],
       trim: true,
     },
+    // Profile picture URL with default image
     profilePic: {
       type: String,
       default:
         "https://militaryhealthinstitute.org/wp-content/uploads/sites/37/2021/08/blank-profile-picture-png.png",
     },
+    // Array of references to Blog documents authored by user
     blogs: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -36,6 +42,7 @@ const userSchema = mongoose.Schema(
         default: [],
       },
     ],
+    // Array of references to liked Blog documents
     likes: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -43,6 +50,7 @@ const userSchema = mongoose.Schema(
         default: [],
       },
     ],
+    // Array of references to Comment documents made by user
     comments: [
       {
         type: mongoose.Schema.Types.ObjectId,
@@ -50,13 +58,15 @@ const userSchema = mongoose.Schema(
         default: [],
       },
     ],
+    // Refresh token string for JWT refresh mechanism
     refreshToken: {
       type: String,
     },
   },
-  { timestamps: true }
+  { timestamps: true } // adds createdAt and updatedAt timestamps
 );
 
+// Pre-save hook to hash password if it was modified
 userSchema.pre("save", async function (next) {
   if (!this.isModified("password")) {
     return next();
@@ -66,10 +76,12 @@ userSchema.pre("save", async function (next) {
   next();
 });
 
+// Instance method to compare given password with hashed password
 userSchema.methods.isPasswordCorrect = async function (password) {
   return await bcrypt.compare(password, this.password);
 };
 
+// Instance method to generate JWT access token
 userSchema.methods.generateAccessToken = function () {
   return jwt.sign(
     {
@@ -84,6 +96,7 @@ userSchema.methods.generateAccessToken = function () {
   );
 };
 
+// Instance method to generate JWT refresh token
 userSchema.methods.generateRefreshToken = function () {
   return jwt.sign(
     {

@@ -4,6 +4,12 @@ import Comment from "../models/commentModel.js";
 import { sendResponse, sendError } from "../utils/helperFunctions.js";
 import { handlePhotoUpload, handlePhotoDelete } from "../utils/cloudinary.js";
 
+/**
+ * Create a new blog post
+ * @param {Request} req - Express request object, expects title, content, category in body and optional thumbnail file
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success or error response with blog data or message
+ */
 const createBlog = async (req, res) => {
   try {
     const { title, content, category } = req.body;
@@ -56,6 +62,12 @@ const createBlog = async (req, res) => {
   }
 };
 
+/**
+ * Get all blogs, optionally filtered by search query
+ * @param {Request} req - Express request object, may contain query param 'q' for search
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with list of blogs or error message
+ */
 const getAllBlogs = async (req, res) => {
   try {
     const { q } = req.query; // read search term from query params
@@ -81,7 +93,12 @@ const getAllBlogs = async (req, res) => {
   }
 };
 
-
+/**
+ * Get a blog by its ID
+ * @param {Request} req - Express request object, expects blog ID in params
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with blog and populated author and comments or error message
+ */
 const getBlogById = async (req, res) => {
   try {
     const { id } = req.params;
@@ -90,8 +107,8 @@ const getBlogById = async (req, res) => {
       .populate({
         path: "comments",
         populate: {
-          path: "author", 
-          select: "userName profilePic", 
+          path: "author",
+          select: "userName profilePic",
         },
       });
 
@@ -105,10 +122,15 @@ const getBlogById = async (req, res) => {
   }
 };
 
+/**
+ * Update a blog by ID (only author can update)
+ * @param {Request} req - Express request object, expects blog ID in params and update data in body, optional thumbnail file
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with updated blog or error message
+ */
 const updateBlog = async (req, res) => {
   try {
     const { title, content, category } = req.body;
-    // const oldUrl = req.user.thumbnail;
 
     const blog = await Blog.findById(req.params.id);
     if (!blog) {
@@ -151,6 +173,12 @@ const updateBlog = async (req, res) => {
   }
 };
 
+/**
+ * Delete a blog by ID (only author can delete)
+ * @param {Request} req - Express request object, expects blog ID in params
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with deleted blog ID or error message
+ */
 const deleteBlog = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -168,6 +196,7 @@ const deleteBlog = async (req, res) => {
     if (blog.thumbnail) {
       await handlePhotoDelete(blog.thumbnail);
     }
+    // Remove references to blog in users' likes and comments
     await User.updateMany(
       { likes: req.params.id },
       { $pull: { likes: req.params.id } }
@@ -178,6 +207,7 @@ const deleteBlog = async (req, res) => {
       { $pull: { comments: req.params.id } }
     );
 
+    // Delete all comments associated with blog
     await Comment.deleteMany({ blog: req.params.id });
 
     return sendResponse(res, 200, "Blog deleted successfully", {
@@ -189,6 +219,12 @@ const deleteBlog = async (req, res) => {
   }
 };
 
+/**
+ * Get comments for a specific blog
+ * @param {Request} req - Express request object, expects blog ID in params
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with list of comments or error message
+ */
 const getComments = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).populate({
@@ -211,6 +247,12 @@ const getComments = async (req, res) => {
   }
 };
 
+/**
+ * Get author details for a specific blog
+ * @param {Request} req - Express request object, expects blog ID in params
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with author details or error message
+ */
 const getAuthorDetails = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id).populate(
@@ -229,6 +271,12 @@ const getAuthorDetails = async (req, res) => {
   }
 };
 
+/**
+ * Get total likes count for a specific blog
+ * @param {Request} req - Express request object, expects blog ID in params
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with total likes count or error message
+ */
 const getTotalLikes = async (req, res) => {
   try {
     const blog = await Blog.findById(req.params.id);
@@ -246,6 +294,12 @@ const getTotalLikes = async (req, res) => {
   }
 };
 
+/**
+ * Add a like to a blog by current user
+ * @param {Request} req - Express request object, expects blog ID in params and user from auth middleware
+ * @param {Response} res - Express response object
+ * @returns {JSON} Success response with updated likes count and user likes or error message
+ */
 const addLike = async (req, res) => {
   try {
     const user = await User.findById(req.user._id);
@@ -264,7 +318,7 @@ const addLike = async (req, res) => {
 
     return sendResponse(res, 200, "Blog liked successfully", {
       blogLikesCount: blog.likes.length,
-      userLikes: user.likes, 
+      userLikes: user.likes,
       isLiked: true,
     });
   } catch (error) {

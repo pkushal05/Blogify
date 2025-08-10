@@ -3,6 +3,12 @@ import { sendResponse, sendError } from "../utils/helperFunctions.js";
 import { handlePhotoUpload, handlePhotoDelete } from "../utils/cloudinary.js";
 import jwt from "jsonwebtoken";
 
+/**
+ * Generate access and refresh tokens for a user
+ * @param {String} userId - MongoDB user ID
+ * @returns {Object} - Contains accessToken and refreshToken
+ * @throws Will throw error if user not found
+ */
 const generateTokens = async (userId) => {
   const user = await User.findById(userId);
 
@@ -17,7 +23,12 @@ const generateTokens = async (userId) => {
   return { accessToken, refreshToken };
 };
 
-// Register User
+/**
+ * Register a new user
+ * @param {Request} req - expects userName, email, password in body
+ * @param {Response} res
+ * @returns JSON with created user info (excluding password, refreshToken) or error
+ */
 const registerUser = async (req, res) => {
   const { userName, email, password } = req.body;
 
@@ -56,7 +67,12 @@ const registerUser = async (req, res) => {
   });
 };
 
-// Login User
+/**
+ * Login a user
+ * @param {Request} req - expects email and password in body
+ * @param {Response} res
+ * @returns JSON with user data, accessToken, refreshToken or error
+ */
 const loginUser = async (req, res) => {
   const { email, password } = req.body;
 
@@ -103,7 +119,12 @@ const loginUser = async (req, res) => {
   });
 };
 
-//Logout User
+/**
+ * Logout user by clearing refresh token and cookies
+ * @param {Request} req - expects req.user from auth middleware
+ * @param {Response} res
+ * @returns JSON success message
+ */
 const logOutUser = async (req, res) => {
   await User.findByIdAndUpdate(
     req.user._id,
@@ -123,7 +144,12 @@ const logOutUser = async (req, res) => {
   return sendResponse(res, 200, "Logged out successfully", {});
 };
 
-// Refresh Access-Token
+/**
+ * Refresh access token using valid refresh token
+ * @param {Request} req - expects refreshToken in cookies or body
+ * @param {Response} res
+ * @returns JSON with new tokens or error
+ */
 const refreshAccessToken = async (req, res) => {
   const incomingRefreshToken =
     req.cookies.refreshToken || req.body.refreshToken;
@@ -148,7 +174,8 @@ const refreshAccessToken = async (req, res) => {
       return sendError(res, 401, "Invalid refresh token 456");
     }
 
-    const { newAccessToken, newRefreshToken } = await generateTokens(user._id);
+    const { accessToken: newAccessToken, refreshToken: newRefreshToken } =
+      await generateTokens(user._id);
 
     const options = {
       httpOnly: true,
@@ -168,14 +195,24 @@ const refreshAccessToken = async (req, res) => {
   }
 };
 
-// Fetch User
+/**
+ * Get current logged-in user from request
+ * @param {Request} req - expects req.user from auth middleware
+ * @param {Response} res
+ * @returns JSON with user info
+ */
 const getCurrentUser = async (req, res) => {
   return sendResponse(res, 200, "User fetched successfully", {
     user: req.user,
   });
 };
 
-// Fetch by ID
+/**
+ * Get user by id
+ * @param {Request} req - expects user id in params (_id)
+ * @param {Response} res
+ * @returns JSON with user info or error
+ */
 const getUserById = async (req, res) => {
   const { _id } = req.params;
   if (!_id) {
@@ -193,7 +230,12 @@ const getUserById = async (req, res) => {
   });
 };
 
-// Fetch All
+/**
+ * Get all users
+ * @param {Request} req
+ * @param {Response} res
+ * @returns JSON with list of users or error
+ */
 const getAllUsers = async (req, res) => {
   const users = await User.find().select("-password -refreshToken");
 
@@ -206,11 +248,15 @@ const getAllUsers = async (req, res) => {
   });
 };
 
-// Update User
+/**
+ * Update user profile - username and profile picture
+ * @param {Request} req - expects userName in body, optional profilePic file, and user from auth middleware
+ * @param {Response} res
+ * @returns JSON with updated user info or error
+ */
 const updateUser = async (req, res) => {
   try {
     const { userName } = req.body;
-    // const oldUrl = req.user;
     if (!userName) {
       return sendError(res, 400, "Please provide all required fields");
     }
@@ -250,7 +296,12 @@ const updateUser = async (req, res) => {
   }
 };
 
-// Delete User
+/**
+ * Delete user and remove profile picture from Cloudinary
+ * @param {Request} req - expects req.user from auth middleware
+ * @param {Response} res
+ * @returns JSON success message or error
+ */
 const deleteUser = async (req, res) => {
   const oldUrl = req.user.profilePic;
   const user = await User.findByIdAndDelete(req.user?._id);
@@ -270,7 +321,12 @@ const deleteUser = async (req, res) => {
   return sendResponse(res, 200, "User deleted successfully", {});
 };
 
-// // Is logged in?
+/**
+ * Check if user is logged in by verifying access token and returning user data
+ * @param {Request} req - expects req.user and accessToken cookie
+ * @param {Response} res
+ * @returns JSON with isLoggedIn boolean and user data if logged in
+ */
 const isLoggedIn = async (req, res) => {
   const token = req.cookies.accessToken;
 
@@ -284,8 +340,7 @@ const isLoggedIn = async (req, res) => {
       .populate({
         path: "blogs",
         options: { sort: { createdAt: -1 } },
-      })
-
+      });
 
     if (!user) {
       return sendResponse(res, 404, "User not found", { isLoggedIn: false });
