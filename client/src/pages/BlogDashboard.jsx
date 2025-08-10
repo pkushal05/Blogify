@@ -3,8 +3,6 @@ import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
 import { clearUserMessages } from "../features/slices/userSlice.js";
-// import { clearBlogMessages } from "../features/slices/blogSlice.js";
-
 // Icons
 import {
   NotebookPen,

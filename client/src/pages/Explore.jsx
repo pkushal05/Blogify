@@ -8,7 +8,6 @@ import {
   Search,
   TrendingUp,
   Clock,
-  Heart,
   Eye,
   BookOpen,
   Sparkles,

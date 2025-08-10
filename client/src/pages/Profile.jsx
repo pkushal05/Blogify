@@ -4,7 +4,7 @@ import { update } from "../features/thunks/userThunks.js";
 import { clearUserMessages } from "../features/slices/userSlice.js";
 
 // Icons
-import { User, Plus } from "lucide-react";
+import { Plus } from "lucide-react";
 import { motion } from "framer-motion";
 
 /**

@@ -6,7 +6,6 @@ import { useDispatch, useSelector } from "react-redux";
 import { Eye, EyeOff, Mail, Lock, House, AlertCircle } from "lucide-react";
 import { login } from "../features/thunks/userThunks.js";
 import { motion } from "framer-motion";
-import { set } from "mongoose";
 
 /**
  * Login Component - User authentication form
