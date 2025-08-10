@@ -216,7 +216,7 @@ const Home = () => {
             {
               mockBlogs.map((item, idx) => {
                 return (
-                  <div onClickCapture={(e) => {e.preventDefault()}}>
+                  <div key={idx} onClickCapture={(e) => {e.preventDefault()}}>
                     <BlogCard
                       key={idx}
                       id={item._id}

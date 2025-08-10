@@ -89,6 +89,7 @@ const Login = () => {
   useEffect(() => {
     if (message) {
       setErrors({ form: message });
+      setIsLoading(false);
     }
   }, [message]);
 

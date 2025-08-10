@@ -1,7 +1,5 @@
 // Base URL for blog-related API endpoints
 const BASE_URL = `${import.meta.env.VITE_API_BASE_URL}/blogs`;
-console.log(BASE_URL)
-// const BASE_URL = "http://localhost:3000/api/v1/blogs";
 
 /**
  * Creates a new blog post by sending a POST request with FormData.
