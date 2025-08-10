@@ -7,13 +7,21 @@ import { create } from "../features/thunks/blogThunks.js";
 // Icons
 import { Upload } from "lucide-react";
 
+/**
+ * CreateBlogPost Component - Form for creating new blog posts
+ * Features: Image upload with preview, form validation, category selection
+ */
 const CreateBlogPost = () => {
   const dispatch = useDispatch();
   const { message, blog, showSuccessMessage, loading } = useSelector(
     (state) => state.blog
   );
   const navigate = useNavigate();
-  const [ redirect, setRedirect ] = useState(false);
+
+  // Controls navigation after successful blog creation
+  const [redirect, setRedirect] = useState(false);
+
+  // Form data state containing all blog post fields
   const [formData, setFormData] = useState({
     thumbnail: null,
     title: "",
@@ -21,9 +29,15 @@ const CreateBlogPost = () => {
     category: "",
   });
 
+  // Form validation errors for each field
   const [errors, setErrors] = useState({});
+  // Image preview URL for thumbnail display
   const [preview, setPreview] = useState("");
 
+  /**
+   * Handles input changes for text fields and clears related errors
+   * @param {Event} e - Input change event
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -32,6 +46,10 @@ const CreateBlogPost = () => {
     }
   };
 
+  /**
+   * Handles thumbnail image selection and creates preview
+   * @param {Event} e - File input change event
+   */
   const handlePreview = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -48,6 +66,10 @@ const CreateBlogPost = () => {
     }
   };
 
+  /**
+   * Validates all form fields according to business rules
+   * @returns {boolean} - True if form is valid, false otherwise
+   */
   const validateForm = () => {
     const newErrors = {};
 
@@ -59,7 +81,6 @@ const CreateBlogPost = () => {
       newErrors.title = "Title must be between 5 to 100 characters";
     }
 
-
     if (!formData.content.trim()) {
       newErrors.content = "Content is required";
     }
@@ -67,7 +88,6 @@ const CreateBlogPost = () => {
     if (formData.content.length < 50 || formData.content.length > 20000) {
       newErrors.content = "Content must be between 50 to 20000 characters";
     }
-
 
     if (!formData.category) {
       newErrors.category = "Please select a category";
@@ -81,6 +101,11 @@ const CreateBlogPost = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * Handles form submission and blog creation
+   * Creates FormData object for file upload and dispatches create action
+   * @param {Event} e - Form submit event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -112,10 +137,12 @@ const CreateBlogPost = () => {
     }
   };
 
+  // Navigate to dashboard after successful creation
   if (redirect) {
     return navigate("/app");
   }
 
+  // Available blog categories for selection
   const categories = ["Technology", "Lifestyle", "Design", "Business"];
 
   return (
@@ -133,7 +160,7 @@ const CreateBlogPost = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Thumbnail Upload */}
+            {/* Thumbnail Upload with drag-and-drop functionality */}
             <div className="form-control">
               <label className="label mb-1">
                 <span className="label-text text-base-content font-medium">
@@ -180,7 +207,7 @@ const CreateBlogPost = () => {
               </div>
             </div>
 
-            {/* Title */}
+            {/* Title Input with character length validation */}
             <div className="form-control relative">
               <label htmlFor="title" className="label mb-1">
                 <span className="label-text text-base-content font-medium ">
@@ -209,7 +236,7 @@ const CreateBlogPost = () => {
               )}
             </div>
 
-            {/* Category Selection */}
+            {/* Category Selection Dropdown */}
             <div className="form-control relative">
               <label htmlFor="category" className="label mb-1">
                 <span className="label-text text-base-content font-medium">
@@ -243,7 +270,7 @@ const CreateBlogPost = () => {
               )}
             </div>
 
-            {/* Content */}
+            {/* Content Textarea with character limit validation */}
             <div className="form-control relative">
               <label htmlFor="content" className="label mb-1">
                 <span className="label-text text-base-content font-medium">
@@ -271,9 +298,8 @@ const CreateBlogPost = () => {
               )}
             </div>
 
-            {/* Action Buttons */}
+            {/* Submit Button with loading state */}
             <div className="flex gap-4 pt-6">
-              
               <button
                 type="submit"
                 disabled={loading}

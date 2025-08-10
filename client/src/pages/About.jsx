@@ -8,7 +8,12 @@ import { motion } from "framer-motion";
 import { Link } from "react-router-dom";
 import my_photo from "../assets/my_photo.png";
 
+/**
+ * About Component - Personal intro, tech stack showcase,
+ * project highlights, and social media/contact links
+ */
 const About = () => {
+  // Technologies used in the project with icons and titles
   const techUsed = [
     { icon: <SiMongodb />, title: "MongoDB" },
     { icon: <SiExpress />, title: "Express" },
@@ -18,6 +23,7 @@ const About = () => {
     { icon: <FaSun />, title: "DaisyUI" },
   ];
 
+  // Social icons with respective links for external profiles/contact
   const socialIcons = [
     { icon: <Github />, link: "https://github.com/pkushal05" },
     { icon: <Instagram />, link: "https://www.instagram.com/_.kushal1052/" },
@@ -28,6 +34,7 @@ const About = () => {
     { icon: <Mail />, link: "mailto:patelkushal2363@gmail.com" },
   ];
 
+  // Key features of the project with icons, titles, and descriptions
   const features = [
     { icon: User, title: "Secure Auth", desc: "JWT‑powered login & signup" },
     {
@@ -45,7 +52,7 @@ const About = () => {
   return (
     <section className="relative overflow-hidden bg-base-300 py-24 min-h-screen">
       <div className="relative z-10 mx-auto w-[90%] max-w-6xl space-y-20  mt-20 font-[Poppins]">
-        {/* Intro */}
+        {/* Introduction Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -53,7 +60,7 @@ const About = () => {
           transition={{ duration: 0.8 }}
           className="grid grid-cols-1 md:grid-cols-2 items-center gap-8 h-auto md:h-72"
         >
-          {/* Text Column */}
+          {/* Text Introduction */}
           <div className="space-y-2">
             <h3 className="text-2xl md:text-3xl text-base-content">Hii, I'm</h3>
             <h1 className="text-3xl md:text-5xl text-neutral font-[FairPlay]">
@@ -65,15 +72,19 @@ const About = () => {
             </p>
           </div>
 
-          {/* Image Column */}
+          {/* Profile Image */}
           <div className="flex justify-center md:justify-end ">
             <div className="w-72 h-94 overflow-hidden">
-              <img src={my_photo} alt="Kushal Patel" className="w-full h-full object-cover" />
+              <img
+                src={my_photo}
+                alt="Kushal Patel"
+                className="w-full h-full object-cover"
+              />
             </div>
           </div>
         </motion.div>
 
-        {/* Showcase */}
+        {/* Project Showcase Section */}
         <motion.div
           initial={{ scale: 0.95, opacity: 0 }}
           whileInView={{ scale: 1, opacity: 1 }}
@@ -81,13 +92,15 @@ const About = () => {
           transition={{ duration: 0.8 }}
           className="backdrop-blur-lg bg-base-100/60 rounded-3xl border border-base-300 p-8 shadow-lg"
         >
+          {/* Section Header */}
           <div className="w-full text-center mb-5">
             <h3 className="mb-6 inline-flex gap-3 text-3xl font-semibold text-neutral">
               <Lightbulb className="h-6 w-6 text-secondary" /> Project Showcase
             </h3>
           </div>
+
           <div className="grid gap-8 md:grid-cols-2">
-            {/* Description */}
+            {/* Project Description & Features */}
             <div className="space-y-4">
               <p className="text-base-content">
                 <span className="font-[FairPlay] text-neutral text-xl md:text-3xl">
@@ -115,7 +128,7 @@ const About = () => {
               </div>
             </div>
 
-            {/* Tech */}
+            {/* Tech Stack Display */}
             <div className="space-y-4">
               <h4 className="text-xl font-light text-neutral text-center">
                 Built With
@@ -138,7 +151,7 @@ const About = () => {
           </div>
         </motion.div>
 
-        {/* Contact */}
+        {/* Contact Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}

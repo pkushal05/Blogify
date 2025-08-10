@@ -7,14 +7,23 @@ import { get, editBlog } from "../features/thunks/blogThunks.js";
 // Icons
 import { Upload } from "lucide-react";
 
+/**
+ * EditBlog Component - Form for editing existing blog posts
+ * Features: Pre-populated form fields, image upload with preview, form validation
+ */
 const EditBlog = () => {
   const dispatch = useDispatch();
+  // Extract blog ID from URL parameters
   const { id } = useParams();
   const { message, currentBlog, showSuccessMessage, loading } = useSelector(
     (state) => state.blog
   );
   const navigate = useNavigate();
+
+  // Controls navigation after successful blog update
   const [redirect, setRedirect] = useState(false);
+
+  // Form data state - initialized empty, populated from currentBlog
   const [formData, setFormData] = useState({
     thumbnail: null,
     title: "",
@@ -22,9 +31,15 @@ const EditBlog = () => {
     category: "",
   });
 
+  // Form validation errors for each field
   const [errors, setErrors] = useState({});
+  // Image preview URL for thumbnail display (existing or new)
   const [preview, setPreview] = useState("");
 
+  /**
+   * Handles input changes for text fields and clears related errors
+   * @param {Event} e - Input change event
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -33,6 +48,10 @@ const EditBlog = () => {
     }
   };
 
+  /**
+   * Populates form with existing blog data when currentBlog is loaded
+   * Sets both form data and preview image from existing blog
+   */
   useEffect(() => {
     if (currentBlog) {
       setFormData({
@@ -45,6 +64,10 @@ const EditBlog = () => {
     }
   }, [currentBlog]);
 
+  /**
+   * Handles new thumbnail image selection and creates preview
+   * @param {Event} e - File input change event
+   */
   const handlePreview = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -61,6 +84,10 @@ const EditBlog = () => {
     }
   };
 
+  /**
+   * Validates all form fields according to business rules
+   * @returns {boolean} - True if form is valid, false otherwise
+   */
   const validateForm = () => {
     const newErrors = {};
 
@@ -92,6 +119,11 @@ const EditBlog = () => {
     return Object.keys(newErrors).length === 0;
   };
 
+  /**
+   * Handles form submission for blog editing
+   * Creates FormData and dispatches editBlog action with blog ID
+   * @param {Event} e - Form submit event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -99,7 +131,7 @@ const EditBlog = () => {
       return;
     }
 
-    // Create FormData for file upload
+    // Create FormData for file upload (handles both new files and existing URLs)
     const submitData = new FormData();
     submitData.append("title", formData.title);
     submitData.append("content", formData.content);
@@ -107,7 +139,7 @@ const EditBlog = () => {
     submitData.append("thumbnail", formData.thumbnail);
 
     try {
-      await dispatch(editBlog({id: currentBlog._id, formData: submitData}));
+      await dispatch(editBlog({ id: currentBlog._id, formData: submitData }));
       setFormData({
         thumbnail: null,
         title: "",
@@ -121,16 +153,19 @@ const EditBlog = () => {
     }
   };
 
+  // Fetch blog data when component mounts or ID changes
   useEffect(() => {
     if (id) {
       dispatch(get(id));
     }
   }, [id, dispatch]);
 
+  // Available blog categories for selection
   const categories = ["Technology", "Lifestyle", "Design", "Business"];
 
+  // Navigate back to previous page after successful update
   if (redirect) {
-    navigate(-1)
+    navigate(-1);
   }
 
   return (
@@ -145,7 +180,7 @@ const EditBlog = () => {
           </div>
 
           <form onSubmit={handleSubmit} className="space-y-6">
-            {/* Thumbnail Upload */}
+            {/* Thumbnail Upload with existing image support */}
             <div className="form-control">
               <label className="label mb-1">
                 <span className="label-text text-base-content font-medium">
@@ -192,7 +227,7 @@ const EditBlog = () => {
               </div>
             </div>
 
-            {/* Title */}
+            {/* Title Input with character length validation */}
             <div className="form-control relative">
               <label htmlFor="title" className="label mb-1">
                 <span className="label-text text-base-content font-medium ">
@@ -221,7 +256,7 @@ const EditBlog = () => {
               )}
             </div>
 
-            {/* Category Selection */}
+            {/* Category Selection Dropdown */}
             <div className="form-control relative">
               <label htmlFor="category" className="label mb-1">
                 <span className="label-text text-base-content font-medium">
@@ -255,7 +290,7 @@ const EditBlog = () => {
               )}
             </div>
 
-            {/* Content */}
+            {/* Content Textarea with character limit validation */}
             <div className="form-control relative">
               <label htmlFor="content" className="label mb-1">
                 <span className="label-text text-base-content font-medium">
@@ -283,7 +318,7 @@ const EditBlog = () => {
               )}
             </div>
 
-            {/* Action Buttons */}
+            {/* Submit Button with loading state */}
             <div className="flex gap-4 pt-6">
               <button
                 type="submit"

@@ -2,22 +2,25 @@ import React, { useEffect } from "react";
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
 import { useSelector, useDispatch } from "react-redux";
-import { clearMessage } from "../features/slices/authSlice.js"
+import { clearMessage } from "../features/slices/authSlice.js";
 //Icons
 import { PenTool, Image, Zap, MessageCircle, SquarePen } from "lucide-react";
-import { FaLinkedin } from "react-icons/fa";  
+import { FaLinkedin } from "react-icons/fa";
 import { Github, Instagram, Mail } from "lucide-react";
 import { ArrowRight } from "lucide-react";
 // Assests
 import blogify_logo_white from "../assets/blogify_logo_white.svg";
 import blogify_logo from "../assets/blogify_logo.svg";
 
-
-
+/**
+ * Home Component - Landing page for Blogify application
+ * Features: Hero section, feature showcase, recent blogs preview, CTA section, footer
+ */
 const Home = () => {
-
   const { message, showSuccessMessage } = useSelector((state) => state.auth);
   const dispatch = useDispatch();
+
+  // Social media links configuration for footer
   const socialIcons = [
     { icon: <Github />, link: "https://github.com/pkushal05" },
     { icon: <Instagram />, link: "https://www.instagram.com/_.kushal1052/" },
@@ -28,6 +31,10 @@ const Home = () => {
     { icon: <Mail />, link: "mailto:patelkushal2363@gmail.com" },
   ];
 
+  /**
+   * Auto-hide success messages (likely from auth actions like login/signup)
+   * Clears message after 3 seconds to improve UX
+   */
   useEffect(() => {
     if (showSuccessMessage) {
       const timer = setTimeout(() => {
@@ -36,11 +43,11 @@ const Home = () => {
 
       return () => clearTimeout(timer);
     }
-  }, [ showSuccessMessage, dispatch ])
+  }, [showSuccessMessage, dispatch]);
 
-  
   return (
     <div id="home" className="w-full min-h-screen bg-base-300">
+      {/* Hero Section with call-to-action */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -48,13 +55,14 @@ const Home = () => {
         transition={{ duration: 0.8 }}
         className="w-full min-h-[calc(100vh-14vh)] flex items-center justify-center py-8 relative"
       >
+        {/* Success message notification (from auth actions) */}
         {showSuccessMessage && (
           <div className="absolute z-30 border right-5 top-30 p-5 rounded-3xl text-neutral select-none bg-neutral-content">
             ✅ {message}
           </div>
         )}
         <div className="container mx-auto px-6 mt-30 lg:px-20 flex flex-col-reverse lg:flex-row items-center">
-          {/* Text Content */}
+          {/* Main hero content */}
           <div className="w-full lg:w-1/2 text-center lg:text-left space-y-3">
             <h3 className="text-xl sm:text-3xl md:text-4xl font-bold text-neutral font-[Playfair]">
               Welcome to
@@ -66,6 +74,7 @@ const Home = () => {
               Discover the latest insights, tutorials, and trends in web
               development—all in one place.
             </p>
+            {/* Primary CTA buttons */}
             <div className="flex flex-col sm:flex-row sm:space-x-4 space-y-4  sm:space-y-2 justify-center lg:justify-start">
               <Link
                 to="/signup"
@@ -83,6 +92,8 @@ const Home = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* Features Section - Showcasing platform capabilities */}
       <motion.div
         initial={{ scale: 0.95, opacity: 0 }}
         whileInView={{ scale: 1, opacity: 1 }}
@@ -97,6 +108,7 @@ const Home = () => {
             </h1>
           </div>
 
+          {/* Feature grid with alternating layouts for visual interest */}
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4 w-full mt-10">
             <div className="bg-base-200 text-base-content p-10 rounded-2xl flex flex-col items-center gap-4 md:col-span-full">
               <PenTool className="text-neutral-content" />
@@ -140,6 +152,8 @@ const Home = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* Recent Blogs Preview Section - Static demo content */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -151,6 +165,7 @@ const Home = () => {
             Recent Blogs
           </h2>
 
+          {/* Demo blog cards for showcase purposes */}
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
             {[1, 2, 3].map((_, index) => (
               <div
@@ -181,6 +196,8 @@ const Home = () => {
           </div>
         </div>
       </motion.div>
+
+      {/* Call-to-Action Section - Final conversion push */}
       <motion.div
         initial={{ opacity: 0, y: 20 }}
         whileInView={{ opacity: 1, y: 0 }}
@@ -204,6 +221,8 @@ const Home = () => {
           </Link>
         </section>
       </motion.div>
+
+      {/* Footer with social links and navigation */}
       <footer className="bg-primary/90 text-neutral-content py-10 px-6 mt-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-8">
           {/* Column 1: Logo & Description */}
@@ -215,7 +234,7 @@ const Home = () => {
             </p>
           </div>
 
-          {/* Column 2: Navigation */}
+          {/* Column 2: Navigation Links */}
           <div className="text-center">
             <h3 className="font-semibold text-lg mb-2">Quick Links</h3>
             <ul className="space-y-1 text-sm">
@@ -237,7 +256,7 @@ const Home = () => {
             </ul>
           </div>
 
-          {/* Column 3: Social Media */}
+          {/* Column 3: Social Media Links */}
           <div className="text-center">
             <h3 className="font-semibold text-lg mb-2">Follow Us</h3>
             <div className="flex gap-4 justify-center">
@@ -256,7 +275,7 @@ const Home = () => {
           </div>
         </div>
 
-        {/* Bottom bar */}
+        {/* Copyright footer */}
         <div className="text-center mt-8 text-sm border-t border-base-300 pt-4">
           © {new Date().getFullYear()} Blogify. All rights reserved.
         </div>

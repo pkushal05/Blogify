@@ -16,20 +16,34 @@ import {
 } from "lucide-react";
 import { useEffect } from "react";
 
+/**
+ * Explore Component - Public blog discovery page
+ * Features: Search functionality, category filtering, sorting tabs, trending topics
+ * Handles both direct navigation and search query parameters
+ */
 const Explore = () => {
+  // Filter and search state
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [searchQuery, setSearchQuery] = useState("");
+  // Tab for sorting blogs (trending, recent, popular)
   const [activeTab, setActiveTab] = useState("trending");
+  // Pagination - number of blogs to display
   const [displayCount, setDisplayCount] = useState(6);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
 
   const location = useLocation();
+  // Extract search query from URL parameters (from search functionality)
   const params = new URLSearchParams(location.search);
   const getSearchQuery = params.get("q") || "";
+
   const dispatch = useDispatch();
   const { allBlogs, message } = useSelector((state) => state.blog);
   const { user } = useSelector((state) => state.user);
 
+  /**
+   * Fetch blogs on component mount and when search query changes
+   * Supports both regular exploration and search results
+   */
   useEffect(() => {
     const fetchBlogs = async () => {
       await dispatch(getBlogs(getSearchQuery));
@@ -38,10 +52,16 @@ const Explore = () => {
     fetchBlogs();
   }, [dispatch, getSearchQuery]);
 
+  // Available categories for filtering
   const categories = ["All", "Technology", "Design", "Lifestyle", "Business"];
 
+  // Pagination control - slice blogs based on displayCount
   const blogsToDisplay = allBlogs.slice(0, displayCount);
 
+  /**
+   * Calculates trending topics based on blog category distribution
+   * @returns {Array} - Array of categories sorted by frequency
+   */
   const getTrendingTopics = () => {
     const categoryCount = {};
     blogsToDisplay.forEach((blog) => {
@@ -54,6 +74,10 @@ const Explore = () => {
 
   const trendingTopics = getTrendingTopics();
 
+  /**
+   * Filters blogs based on selected category and search query
+   * Searches in both title and content fields
+   */
   const filteredBlogs = blogsToDisplay.filter((blog) => {
     const matchesCategory =
       selectedCategory === "All" || blog.category === selectedCategory;
@@ -63,6 +87,12 @@ const Explore = () => {
     return matchesCategory && matchesSearch;
   });
 
+  /**
+   * Sorts filtered blogs based on active tab selection
+   * - trending: sorted by likes count (descending)
+   * - recent: sorted by creation date (newest first)
+   * - popular: sorted by views count (descending)
+   */
   const sortedBlogs = [...filteredBlogs].sort((a, b) => {
     switch (activeTab) {
       case "trending":
@@ -76,6 +106,9 @@ const Explore = () => {
     }
   });
 
+  /**
+   * Handles pagination - loads more blogs with simulated loading delay
+   */
   const handleLoadMore = () => {
     setIsLoadingMore(true);
     setTimeout(() => {
@@ -86,7 +119,9 @@ const Explore = () => {
 
   return (
     <>
+      {/* Conditional rendering: Search results view vs. Full explore page */}
       {getSearchQuery ? (
+        // Search Results View - Simplified layout for search results
         <div className="w-full min-h-screen bg-base-300 font-[Poppins]">
           <div className="max-w-7xl pt-20 mx-auto">
             <div className="p-15">
@@ -96,29 +131,37 @@ const Explore = () => {
               </h1>
               <div className="container w-full mt-5">
                 <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-6">
-                  {allBlogs.map((item) => {
-                    return (
-                      <BlogCard
-                        key={item._id}
-                        id={item._id}
-                        thumbnail={item.thumbnail}
-                        title={item.title}
-                        content={item.content}
-                        authorPic={item.author.profilePic}
-                        authorName={item.author.userName}
-                        category={item.category}
-                        date={new Date(item.createdAt).toLocaleDateString()}
-                      />
-                    );
-                  })}
+                  {allBlogs.length > 0 ? (
+                    allBlogs.map((item) => {
+                      return (
+                        <BlogCard
+                          key={item._id}
+                          id={item._id}
+                          thumbnail={item.thumbnail}
+                          title={item.title}
+                          content={item.content}
+                          authorPic={item.author.profilePic}
+                          authorName={item.author.userName}
+                          category={item.category}
+                          date={new Date(item.createdAt).toLocaleDateString()}
+                        />
+                      );
+                    })
+                  ) : (
+                    <div className="text-lg text-neutral-600 select-none">
+                      {console.log(message)}
+                      {message}
+                    </div>
+                  )}
                 </div>
               </div>
             </div>
           </div>
         </div>
       ) : (
+        // Full Explore Page - Complete discovery interface
         <div className="min-h-screen bg-base-300 font-[Poppins]">
-          {/* Hero Section */}
+          {/* Hero Section with search functionality */}
           <div className="hero pt-25 pb-12">
             <div className="hero-content text-center max-w-4xl">
               <div>
@@ -131,7 +174,7 @@ const Explore = () => {
                   Find your next favorite read.
                 </p>
 
-                {/* Search Bar */}
+                {/* Search Bar for real-time filtering */}
                 <div className="form-control max-w-md mx-auto">
                   <div className="input-group">
                     <input
@@ -152,10 +195,9 @@ const Explore = () => {
 
           <div className="container mx-auto px-4 py-8">
             <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
-              {/* Main Content */}
+              {/* Main Content Area - 3/4 width on large screens */}
               <div className="lg:col-span-3">
-                {/* Tabs */}
-
+                {/* Sorting Tabs - trending, recent, popular */}
                 <div className="tabs tabs-boxed bg-base-200 rounded-2xl mb-6 p-1">
                   <button
                     className={`tab gap-2 ${
@@ -186,7 +228,7 @@ const Explore = () => {
                   </button>
                 </div>
 
-                {/* Category Filter */}
+                {/* Category Filter Buttons */}
                 <div className="flex flex-wrap gap-2 mb-6">
                   <div className="flex items-center gap-2 mr-4">
                     <Filter size={16} className="text-base-content/60" />
@@ -207,7 +249,7 @@ const Explore = () => {
                   ))}
                 </div>
 
-                {/* Results Info */}
+                {/* Results Summary */}
                 <div className="flex items-center justify-between mb-4">
                   <p className="text-base-content/60">
                     {sortedBlogs.length} articles found
@@ -217,7 +259,7 @@ const Explore = () => {
                   </div>
                 </div>
 
-                {/* Blog Grid */}
+                {/* Blog Grid - Responsive layout */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                   {sortedBlogs.map((item) => (
                     <BlogCard
@@ -234,7 +276,7 @@ const Explore = () => {
                   ))}
                 </div>
 
-                {/* Load More */}
+                {/* Load More Button with pagination */}
                 <div className="text-center mt-8">
                   <button
                     disabled={isLoadingMore}
@@ -246,9 +288,9 @@ const Explore = () => {
                 </div>
               </div>
 
-              {/* Sidebar */}
+              {/* Sidebar - 1/4 width on large screens */}
               <div className="space-y-6">
-                {/* Trending Topics */}
+                {/* Trending Topics Widget */}
                 <div className="card bg-base-100 shadow-md">
                   <div className="card-body">
                     <h3 className="card-title text-lg flex items-center gap-2">
@@ -273,7 +315,7 @@ const Explore = () => {
                   </div>
                 </div>
 
-                {/* Featured Authors */}
+                {/* User's Recent Activity Widget */}
                 <div className="card bg-base-100 shadow-md">
                   <div className="card-body">
                     <h3 className="card-title text-lg flex items-center gap-2">
@@ -315,7 +357,7 @@ const Explore = () => {
                   </div>
                 </div>
 
-                {/* Quick Stats */}
+                {/* User Statistics Widget - aggregated data display */}
                 <div className="card bg-gradient-to-br from-primary/10 to-secondary/10">
                   <div className="card-body text-center">
                     <h3 className="card-title text-lg justify-center mb-4">
@@ -336,6 +378,7 @@ const Explore = () => {
                       </div>
                       <div className="stat p-4">
                         <div className="stat-value text-accent text-2xl">
+                          {/* Calculate total likes across all blogs */}
                           {allBlogs.reduce(
                             (sum, blog) => sum + (blog.likes.length || 0),
                             0

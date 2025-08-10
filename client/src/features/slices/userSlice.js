@@ -1,4 +1,4 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import {
   checkLoginStatus,
   login,
@@ -11,26 +11,27 @@ import {
   like,
   deleteThunk,
 } from "../thunks/blogThunks.js";
-import { act } from "react";
 
 const initialState = {
-  isLoggedIn: false,
-  user: null,
-  message: null,
-  loading: false,
-  showSuccessMessage: false,
+  isLoggedIn: false, // user login status
+  user: null, // logged in user data
+  message: null, // success or error messages
+  loading: false, // loading state for async actions
+  showSuccessMessage: false, // flag to show success messages
 };
 
 const userSlice = createSlice({
   name: "user",
   initialState,
   reducers: {
+    // Clear messages and success flag
     clearUserMessages: (state) => {
-      (state.message = null), (state.showSuccessMessage = false);
+      state.message = null;
+      state.showSuccessMessage = false;
     },
   },
   extraReducers: (builder) => {
-    // Login
+    // Login related actions
     builder
       .addCase(login.pending, (state) => {
         state.loading = true;
@@ -52,6 +53,8 @@ const userSlice = createSlice({
         state.message = action.error.message || "Login failed";
         state.showSuccessMessage = false;
       })
+
+      // Registration related actions
       .addCase(register.pending, (state) => {
         state.loading = true;
         state.message = null;
@@ -71,6 +74,8 @@ const userSlice = createSlice({
         state.message = action.error.message || "Registration failed";
         state.showSuccessMessage = false;
       })
+
+      // Check login status actions
       .addCase(checkLoginStatus.pending, (state) => {
         state.loading = true;
       })
@@ -81,9 +86,11 @@ const userSlice = createSlice({
       })
       .addCase(checkLoginStatus.rejected, (state, action) => {
         state.loading = false;
-        state.isLoggedIn = action.payload.isLoggedIn || false;
+        state.isLoggedIn = action.payload?.isLoggedIn || false;
         state.user = null;
       })
+
+      // Update user details actions
       .addCase(update.pending, (state) => {
         state.loading = true;
         state.message = null;
@@ -105,6 +112,8 @@ const userSlice = createSlice({
         state.user = null;
         state.showSuccessMessage = false;
       })
+
+      // Blog create action updates user's blogs
       .addCase(create.fulfilled, (state, action) => {
         if (state.user?.blogs) {
           state.user.blogs.push(action.payload.blog);
@@ -112,6 +121,8 @@ const userSlice = createSlice({
         state.message = action.payload.message;
         state.showSuccessMessage = true;
       })
+
+      // Make comment updates user's commented blogs list
       .addCase(makeComment.fulfilled, (state, action) => {
         if (state.user?.comments) {
           if (!state.user.comments.includes(action.payload.comment.blog)) {
@@ -119,11 +130,15 @@ const userSlice = createSlice({
           }
         }
       })
+
+      // Like action updates user's likes
       .addCase(like.fulfilled, (state, action) => {
         if (state.user?.likes) {
           state.user.likes = action.payload.userLikes;
         }
       })
+
+      // Delete blog action updates user's blogs, likes, and comments
       .addCase(deleteThunk.fulfilled, (state, action) => {
         if (state.user) {
           state.user.blogs = state.user.blogs.filter(
@@ -135,11 +150,9 @@ const userSlice = createSlice({
           state.user.comments = state.user.comments.filter(
             (blogId) => blogId !== action.payload.id
           );
-          
         }
         state.message = action.payload.message;
         state.showSuccessMessage = true;
-        
       });
   },
 });

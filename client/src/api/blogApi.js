@@ -1,10 +1,19 @@
+// Base URL for blog-related API endpoints
 const BASE_URL = "http://localhost:3000/api/v1/blogs";
 
+/**
+ * Creates a new blog post by sending a POST request with FormData.
+ * FormData allows sending files like images along with other data.
+ *
+ * @param {FormData} formData - Blog post data including files.
+ * @returns {Promise<Object>} - Created blog data from server.
+ * @throws {Error} - Throws if creation fails.
+ */
 export const createBlog = async (formData) => {
   const res = await fetch(`${BASE_URL}/`, {
     method: "POST",
-    credentials: "include",
-    body: formData,
+    credentials: "include", // Include cookies/session for authentication
+    body: formData, // Sending multipart/form-data
   });
 
   const data = await res.json();
@@ -14,6 +23,13 @@ export const createBlog = async (formData) => {
   return data;
 };
 
+/**
+ * Fetches a single blog post by ID with GET request.
+ *
+ * @param {string} id - Blog ID to fetch.
+ * @returns {Promise<Object>} - Blog data.
+ * @throws {Error} - Throws if fetch fails.
+ */
 export const getBlog = async (id) => {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "GET",
@@ -27,6 +43,15 @@ export const getBlog = async (id) => {
   return data;
 };
 
+/**
+ * Updates a blog post by ID with PATCH request.
+ * Accepts FormData for updating fields including files.
+ *
+ * @param {string} id - Blog ID to update.
+ * @param {FormData} formData - Updated blog data.
+ * @returns {Promise<Object>} - Updated blog data.
+ * @throws {Error} - Throws if update fails.
+ */
 export const updateBlog = async (id, formData) => {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "PATCH",
@@ -41,6 +66,13 @@ export const updateBlog = async (id, formData) => {
   return data;
 };
 
+/**
+ * Likes a blog post by ID via POST request.
+ *
+ * @param {string} id - Blog ID to like.
+ * @returns {Promise<Object>} - Server response after liking.
+ * @throws {Error} - Throws if like action fails.
+ */
 export const likeBlog = async (id) => {
   const res = await fetch(`${BASE_URL}/${id}/like`, {
     method: "POST",
@@ -57,6 +89,13 @@ export const likeBlog = async (id) => {
   return data;
 };
 
+/**
+ * Deletes a blog post by ID with DELETE request.
+ *
+ * @param {string} id - Blog ID to delete.
+ * @returns {Promise<Object>} - Contains deleted blog ID and server message.
+ * @throws {Error} - Throws if delete fails.
+ */
 export const deleteBlog = async (id) => {
   const res = await fetch(`${BASE_URL}/${id}`, {
     method: "DELETE",
@@ -73,6 +112,14 @@ export const deleteBlog = async (id) => {
   return { id, message: data.message };
 };
 
+/**
+ * Fetches all blogs or filtered by search query.
+ * If query `q` is provided, performs search with that query.
+ *
+ * @param {string} [q] - Optional search query string.
+ * @returns {Promise<Object[]>} - Array of blog posts.
+ * @throws {Error} - Throws if fetch fails.
+ */
 export const getAll = async (q) => {
   const url = q ? `${BASE_URL}/?q=${encodeURIComponent(q)}` : `${BASE_URL}/`;
 

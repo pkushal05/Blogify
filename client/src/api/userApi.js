@@ -1,9 +1,17 @@
+// Base URL for user-related API endpoints
 const BASE_URL = "http://localhost:3000/api/v1/user";
 
+/**
+ * Checks if the user is currently logged in by verifying the session status.
+ * Sends a GET request with credentials included.
+ *
+ * @returns {Promise<Object>} - User login status and info.
+ * @throws {Error} - Throws if login status check fails.
+ */
 export const isLoggedIn = async () => {
   const res = await fetch(`${BASE_URL}/status`, {
     method: "GET",
-    credentials: "include",
+    credentials: "include", // Include cookies/session for auth
   });
 
   const data = await res.json();
@@ -13,6 +21,14 @@ export const isLoggedIn = async () => {
   return data;
 };
 
+/**
+ * Logs in a user by sending credentials to the server.
+ * Sends a POST request with JSON body containing user credentials.
+ *
+ * @param {Object} userData - User login data (e.g., email, password).
+ * @returns {Promise<Object>} - Logged-in user data and token.
+ * @throws {Error} - Throws if login fails.
+ */
 export const loginUser = async (userData) => {
   const res = await fetch(`${BASE_URL}/login`, {
     method: "POST",
@@ -20,7 +36,7 @@ export const loginUser = async (userData) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
-    credentials: "include",
+    credentials: "include", // Include cookies/session for auth
   });
 
   const data = await res.json();
@@ -30,6 +46,14 @@ export const loginUser = async (userData) => {
   return data;
 };
 
+/**
+ * Registers a new user by sending user details to the server.
+ * Sends a POST request with JSON body containing user registration data.
+ *
+ * @param {Object} userData - User registration data (e.g., name, email, password).
+ * @returns {Promise<Object>} - Newly registered user data.
+ * @throws {Error} - Throws if registration fails.
+ */
 export const registerUser = async (userData) => {
   const res = await fetch(`${BASE_URL}/register`, {
     method: "POST",
@@ -37,7 +61,7 @@ export const registerUser = async (userData) => {
       "Content-Type": "application/json",
     },
     body: JSON.stringify(userData),
-    credentials: "include",
+    credentials: "include", // Include cookies/session for auth
   });
 
   const data = await res.json();

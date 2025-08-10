@@ -8,18 +8,31 @@ import { login } from "../features/thunks/userThunks.js";
 import { motion } from "framer-motion";
 import { set } from "mongoose";
 
+/**
+ * Login Component - User authentication form
+ * Features: Email/password validation, password visibility toggle, error handling
+ * Redirects to dashboard on successful authentication
+ */
 const Login = () => {
   const dispatch = useDispatch();
   const { isLoggedIn, loading, message } = useSelector((state) => state.user);
 
+  // Form data for login credentials
   const [formData, setFormData] = useState({
     email: "",
     password: "",
   });
+  // Controls password field visibility
   const [showPassword, setShowPassword] = useState(false);
+  // Field-specific validation errors
   const [errors, setErrors] = useState({});
+  // Local loading state for button UI
   const [isLoading, setIsLoading] = useState(false);
 
+  /**
+   * Handles input changes and clears related field errors
+   * @param {Event} e - Input change event
+   */
   const handleChange = (e) => {
     const { name, value } = e.target;
     setFormData((prev) => ({ ...prev, [name]: value }));
@@ -28,6 +41,10 @@ const Login = () => {
     }
   };
 
+  /**
+   * Validates login form fields
+   * @returns {Object} - Object containing validation errors
+   */
   const validateForm = () => {
     const newErrors = {};
     if (!formData.email) {
@@ -43,6 +60,11 @@ const Login = () => {
     return newErrors;
   };
 
+  /**
+   * Handles form submission and login process
+   * Validates form, dispatches login action, manages loading state
+   * @param {Event} e - Form submit event
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -57,30 +79,35 @@ const Login = () => {
     dispatch(login(formData));
   };
 
+  // Reset loading state when login completes
   useEffect(() => {
     if (isLoggedIn) {
       setIsLoading(false);
     }
   }, [isLoggedIn]);
 
+  // Display server-side error messages (invalid credentials, etc.)
   useEffect(() => {
     if (message) {
       setErrors({ form: message });
     }
   }, [message]);
 
+  // Redirect to dashboard if already logged in
   if (isLoggedIn) {
     return <Navigate to="/app" replace />;
   }
 
   return (
     <div className="relative min-h-screen flex items-center justify-center p-4 bg-base-300">
+      {/* Home navigation button */}
       <Link className="absolute top-12 left-10 btn btn-ghost btn-square" to="/">
         <House />
       </Link>
+
       <div className="card w-full max-w-md bg-base-100 shadow-xl rounded-2xl font-[Poppins] relative">
         <div className="card-body">
-          {/* Header */}
+          {/* Header Section */}
           <div className="text-center mb-6">
             <div className="mx-auto mb-4 w-16 h-16 flex items-center justify-center rounded-full bg-primary-content">
               <span className="text-2xl text-primary">🔐</span>
@@ -91,7 +118,7 @@ const Login = () => {
             </p>
           </div>
 
-          {/* Email Field */}
+          {/* Email Field with icon */}
           <div className="form-control">
             <label className="label block text-sm font-medium text-neutral mb-1">
               Email
@@ -120,7 +147,7 @@ const Login = () => {
             )}
           </div>
 
-          {/* Password Field */}
+          {/* Password Field with visibility toggle */}
           <div className="form-control mt-4">
             <label className="block text-sm font-medium text-neutral mb-1">
               Password
@@ -141,6 +168,7 @@ const Login = () => {
                     : "border-gray-300"
                 }`}
               />
+              {/* Password visibility toggle button */}
               <button
                 type="button"
                 className="btn btn-ghost btn-square absolute right-0"
@@ -158,7 +186,7 @@ const Login = () => {
             )}
           </div>
 
-          {/* Submit Button */}
+          {/* Submit Button with loading state */}
           <div className="form-control mt-6">
             <button
               type="submit"
@@ -170,14 +198,16 @@ const Login = () => {
             </button>
           </div>
 
-          {/* Footer Link */}
+          {/* Sign up link */}
           <p className="text-center text-sm text-neutral-content mt-4">
-            Don’t have an account?
+            Don't have an account?
             <Link to="/signup" className="text-primary hover:underline ml-2">
               Sign Up
             </Link>
           </p>
         </div>
+
+        {/* Server error message display (animated) */}
         {errors.form && (
           <motion.div
             animate={{ y: 0, opacity: 1 }}
