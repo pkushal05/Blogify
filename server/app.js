@@ -3,11 +3,13 @@ import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectDB from "./db/database.js";
+import path from "path";
 
 // Load environment variables from .env file
 configDotenv();
 
 const app = express();
+const _dirname = path.resolve();
 
 // Enable CORS with credentials for the specified origin
 app.use(
@@ -40,6 +42,11 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/comments", commentRoutes);
+
+app.use(express.static(path.join(_dirname, "./client/dist")));
+app.get("/{*any}", (req, res) => {
+  res.sendFile(path.resolve(_dirname, "./client", "dist", "index.html"));
+});
 
 // Start the server on the specified port
 app.listen(process.env.PORT || 3000, () => {
