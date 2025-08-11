@@ -3,11 +3,17 @@ import { configDotenv } from "dotenv";
 import cookieParser from "cookie-parser";
 import cors from "cors";
 import connectDB from "./db/database.js";
+import path from "path";
+import { fileURLToPath } from "url";
 
 // Load environment variables from .env file
 configDotenv();
 
 const app = express();
+
+// Get __dirname equivalent for ES modules
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Enable CORS with credentials for the specified origin
 app.use(
@@ -40,6 +46,18 @@ app.use("/api/v1/auth", authRoutes);
 app.use("/api/v1/user", userRoutes);
 app.use("/api/v1/blogs", blogRoutes);
 app.use("/api/v1/comments", commentRoutes);
+
+// Serve static files from React build in production
+if (process.env.NODE_ENV === "production") {
+  // Serve static files (CSS, JS, images) from client/dist
+  app.use(express.static(path.join(__dirname, "../client/dist")));
+
+  // Handle React routing - catch all handler
+  // This MUST be after all API routes
+  app.get("*", (req, res) => {
+    res.sendFile(path.join(__dirname, "../client/dist", "index.html"));
+  });
+}
 
 // Start the server on the specified port
 app.listen(process.env.PORT || 3000, () => {
