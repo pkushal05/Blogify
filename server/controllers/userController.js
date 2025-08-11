@@ -105,8 +105,8 @@ const loginUser = async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    sameSite: "lax", // Changed from "none" to "lax"
   };
 
   res
@@ -137,8 +137,8 @@ const logOutUser = async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: true,
-    sameSite: "none",
+    secure: process.env.NODE_ENV === "production", // Only secure in production
+    sameSite: "lax", // Changed from "none" to "lax"
   };
 
   res.cookie("accessToken", "", options).cookie("refreshToken", "", options);
