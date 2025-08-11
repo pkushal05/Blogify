@@ -120,16 +120,17 @@ const GuestNavbar = () => {
         {isMenuOpen && (
           <div className="lg:hidden relative w-full z-50 ">
             <div className="flex flex-col space-y-4 bg-neutral text-neutral-content absolute items-center pt-4 pb-4 w-full h-auto top-1 left-0">
-              {["Home", "About", "Contact"].map((item, index) => (
-                <Link
-                  to={item === "Home" ? "/" : `/${item.toLowerCase().trim()}`}
-                  key={index}
-                  className="hover:text-base-200"
-                  onClick={() => setIsMenuOpen(false)} // Close menu on link click
-                >
-                  {item}
-                </Link>
-              ))}
+              {navLinks.map((item, idx) => {
+                return (
+                  <Link
+                    key={idx}
+                    className="hover:text-base-200"
+                    to={item.link}
+                  >
+                    {item.tag}
+                  </Link>
+                );
+              })}
               <p className="mt-6 text-neutral-content text-sm">
                 &copy; {`${new Date().getFullYear()} Blogify`}
               </p>
