@@ -77,10 +77,9 @@ const getAllBlogs = async (req, res) => {
       filter.title = { $regex: q, $options: "i" }; // case-insensitive search
     }
 
-    const blogs = await Blog.find(filter).populate(
-      "author",
-      "userName profilePic"
-    );
+    const blogs = await Blog.find(filter)
+      .populate("author", "userName profilePic")
+      .sort({ createdAt: -1 });
 
     if (!blogs || blogs.length === 0) {
       return sendError(res, 404, "No blogs found");

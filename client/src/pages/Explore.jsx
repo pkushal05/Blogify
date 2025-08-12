@@ -377,8 +377,8 @@ const Explore = () => {
                       </div>
                       <div className="stat p-4">
                         <div className="stat-value text-accent text-2xl">
-                          {/* Calculate total likes across all blogs */}
-                          {allBlogs.reduce(
+                          {/* Calculate total likes across user's blogs */}
+                          {user.blogs.reduce(
                             (sum, blog) => sum + (blog.likes.length || 0),
                             0
                           )}

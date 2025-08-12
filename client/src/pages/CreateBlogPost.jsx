@@ -17,6 +17,7 @@ const CreateBlogPost = () => {
     (state) => state.blog
   );
   const navigate = useNavigate();
+  const MAX_SIZE = 2 * 1024 * 1024;
 
   // Controls navigation after successful blog creation
   const [redirect, setRedirect] = useState(false);
@@ -53,6 +54,19 @@ const CreateBlogPost = () => {
   const handlePreview = (e) => {
     const file = e.target.files[0];
     if (file) {
+      if (file.size > MAX_SIZE) {
+        setErrors((prev) => ({
+          ...prev,
+          thumbnail: "File size should be less than 2MB",
+        }));
+        setPreview("");
+        setFormData((prev) => ({
+          ...prev,
+          thumbnail: null,
+        }));
+        return; // stop processing this file
+      }
+
       const url = URL.createObjectURL(file);
       setPreview(url);
       setFormData((prev) => ({

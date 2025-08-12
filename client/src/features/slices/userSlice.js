@@ -116,7 +116,7 @@ const userSlice = createSlice({
       // Blog create action updates user's blogs
       .addCase(create.fulfilled, (state, action) => {
         if (state.user?.blogs) {
-          state.user.blogs.push(action.payload.blog);
+          state.user.blogs.unshift(action.payload.blog);
         }
         state.message = action.payload.message;
         state.showSuccessMessage = true;
