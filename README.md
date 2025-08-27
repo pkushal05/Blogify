@@ -24,6 +24,8 @@
 
 🚀 [Live Demo](https://blogify-mxdu.onrender.com/)
 
+⚠️ *Note: The server is hosted on Render free tier. It may take 20–40 seconds to wake up when you open the demo for the first time.*
+
 ---
 
 ## Author
