@@ -64,7 +64,7 @@ const About = () => {
           <div className="space-y-2">
             <h3 className="text-2xl md:text-3xl text-base-content">Hii, I'm</h3>
             <h1 className="text-3xl md:text-5xl text-neutral font-[FairPlay]">
-              Kushal Patel
+              Kushal Mayankbhai Patel
             </h1>
             <p className="max-w-xl text-base md:text-lg text-base-content leading-relaxed">
               a Computer Programming &amp; Analysis student at Durham College,
@@ -77,7 +77,7 @@ const About = () => {
             <div className="w-72 h-94 overflow-hidden">
               <img
                 src={my_photo}
-                alt="Kushal Patel"
+                alt="Kushal Mayankbhai Patel"
                 className="w-full h-full object-cover"
               />
             </div>
